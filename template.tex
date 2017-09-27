@@ -1,0 +1,164 @@
+\documentclass{article}
+
+\usepackage[final]{style}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{verbatim}
+% For figures
+\usepackage{graphicx}
+
+
+\title{CS 131 Lecture 1: Course introduction}
+
+\author{
+  Olivier Moindrot \\
+  Department of Computer Science\\
+  Stanford University\\
+  Stanford, CA 94305 \\
+  \texttt{olivierm@stanford.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+
+\section{What is computer vision?}
+% - definition
+% - 50 year old field
+% - how is it used?
+% - interdisciplinary
+% - it is hard (why?)
+% - what is vision?
+\subsection{Definition}
+\paragraph{Two definitions of computer vision}
+Computer vision can be defined as \textit{a scientific field that extracts information out of digital images}. The type of information gained from an image can vary from identification, space measurements for navigation, or augmented reality applications.
+
+Another way to define computer vision is through its applications. Computer vision is \textit{building algorithms that can understand the content of images and use it for other applications}. We will see in more details in section \ref{applications} the different domains where computer vision is applied.
+
+\paragraph{A bit of history}
+The origins of computer vision go back to an MIT undergraduate summer project in 1966 \cite{papert1966summer}. It was believed at the time that computer vision could be solved in one summer, but we now have a 50-year old scientific field which is still far from being solved.
+
+\begin{figure}[h]
+\begin{center}
+\centerline{\includegraphics[width=0.8\columnwidth]{fields.png}}
+\caption{Computer vision at the intersection of multiple scientific fields}
+\label{fields}
+\end{center}
+\end{figure} 
+
+\subsection{An interdisciplinary field}
+
+Computer vision brings together a large set of disciplines. Neuroscience can help computer vision by first understanding human vision, as we will see in section \ref{solving}. Computer vision can be seen as a part of computer science, and algorithm theory or machine learning are essential for developing computer vision algorithms.
+
+We will show in this class how all the fields in figure \ref{fields} are connected, and how computer vision draws inspirations and techniques from them.
+
+\subsection{A hard problem}
+
+Computer vision has not been solved in 50 years, and is still a very hard problem. It's something that we humans do unconsciously but that is genuinely hard for computers.
+
+\paragraph{Poetry harder than chess}
+The IBM supercomputer Deep Blue defeated for the first time the world chess champion Garry Kasparov in 1997. Today we still struggle to create algorithms that output well formed sentences, let alone poems.
+The gap between these two domains show that what humans call \textit{intelligence} is often not a good criteria to assess the difficulty of a computer task. Deep Blue won through brute force search among millions of possibilities and cannot pretend to have solved intelligence.
+
+\paragraph{Vision harder than 3D modeling}
+It is today easier to create a 3D model of an object up to millimeter precision than to build an algorithm that recognizes chairs. Object recognition is still a very difficult problem, although we are approaching human accuracy.
+
+\paragraph{Why is so hard?}
+Computer vision is hard because there is a huge gap between pixels and meaning. What the computer sees in a $200 \times 200$ RGB image is a set of $120,000$ values. The road from these numbers to meaningful information is very difficult. Arguably, the human brain solves this same difficulty by understanding images that are just projections on our retina converted to neuron signals. The next section will show how studying the brain can help computer vision.
+
+
+\section{Solving computer vision} \label{solving}
+% what is vision
+% simulating the brain
+% humans visual system very good
+% but can be fooled
+% context is powerful
+% conclusion: we didn't imitate birds to fly planes, but studying them made us understood aerodynamics
+A first idea to solve computer vision is to understand how human vision works, and transfer this knowledge to computers.
+
+\subsection{What is vision}
+Be it a computer or an animal, vision comes down to two components.
+
+First, a \textbf{sensing device} captures as much details from an image as possible. The eye will capture light coming through the iris and project it to the retina, where specialized cells will transmit information to the brain. A camera captures images in a similar way and transmit pixels to the computer. In this part, cameras are better than humans as they can see infrared, see farther away or with more precision.
+
+Second, the \textbf{interpreting device} has to process the information and extract meaning from it. The human brain solves this in multiple steps in different regions of the brain. Computer vision still lag behind human performance in this domain.
+
+\subsection{The human visual system}
+
+In 1962, Hubel \& Wiesel \cite{hubel} tried to understand the visual system of a cat by recording neurons while showing a cat bright lines. They found that some specialized neurons fired only when the line was in a particular spot on the retina or if it had a certain orientation.
+\footnote{More information in \href{http://knowingneurons.com/2014/10/29/hubel-and-wiesel-the-neural-basis-of-visual-perception/}{this blog post}}
+
+Their research led to the beginning of a scientific journey to understand the human visual system, which is still active today.
+
+They were awarded the Nobel Prize in Physiology and Medecine in 1981 for their work. After the announcement, Dr. Hubel said:
+\begin{quote}
+There has been a myth that the brain cannot understand itself.  It is compared to a man trying to lift himself by his own bootstraps.  We feel that is nonsense.  The brain can be studied just as the kidney can.
+\end{quote}
+
+
+\subsection{How good is the human visual system}
+\paragraph{Speed}
+The human visual system is very efficient. As recognizing threats and reacting to them quickly was paramount to survival, evolution perfected the visual system of mammals for millions of years.
+
+The speed of the human visual system has been measured \cite{speed} to around 150ms to recognize an animal from a normal nature scene. Figure \ref{fig:speed} shows how the brain response to images of animals and non-animals diverge after around 150ms.
+
+\begin{figure}[h]
+\begin{center}
+\centerline{\includegraphics[width=0.8\columnwidth]{speed.png}}
+\caption{Difference between animal and non-animal response. From \cite{speed}}
+\label{fig:speed}
+\end{center}
+\end{figure} 
+
+
+\paragraph{Fooling humans}
+However, this speed is obtained at the price of some drawbacks. Changing small irrelevant parts of an image such as water reflection or background can go unnoticed because the human brain focuses on the important parts of an image \cite{failure}.
+
+If the signal is very close to the background, it can be difficult to detect and segment the relevant part of the image.
+
+\paragraph{Context}
+Humans use context all the time to infer clues about images. Previous knowledge is one of the most difficult tool to incorporate into computer vision. Humans use context to know where to focus on an image, to know what to expect at certain positions. Context also helps the brain to compensate for colors in shadows.
+
+However, context can be used to fool the human brain.
+
+\subsection{Lessons from nature}
+Imitating birds did not lead humans to planes. Plainly copying nature is not the best way or the most efficient way to learn how to fly. But studying birds made us understand aerodynamics, and understanding concepts like lift allowed us to build planes.
+
+The same might be true with intelligence. Even though it is not possible with today's technology, simulating a full human brain to create intelligence might not be the best way to get there. However, neuroscientists hope to get insights at what may be the concepts behind vision, language and other forms of intelligence.
+
+% -------------------
+\section{Extracting information from images}
+
+\subsection{Measuring space}
+\subsection{Semantic information}
+
+
+% -------------------
+\section{Applications of computer vision} \label{applications}
+% cameras are everywhere
+% special effects
+% 3D urban modeling
+% scene recognition
+% face detection
+% OCR
+% self-driving cars
+% automatic checkout (Amazon)
+% Kinect
+% AR
+% VR
+% Space exploration
+
+
+
+% References
+\small
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\end{document}
