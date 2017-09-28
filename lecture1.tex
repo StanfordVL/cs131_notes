@@ -74,7 +74,7 @@ It is today easier to create a 3D model of an object up to millimeter precision 
 Computer vision is hard because there is a huge gap between pixels and meaning. What the computer sees in a $200 \times 200$ RGB image is a set of $120,000$ values. The road from these numbers to meaningful information is very difficult. Arguably, the human brain solves this same difficulty by understanding images that are just projections on our retina converted to neuron signals. The next section will show how studying the brain can help computer vision.
 
 
-\section{Solving computer vision} \label{solving}
+\section{Understanding human vision} \label{solving}
 % what is vision
 % simulating the brain
 % humans visual system very good
@@ -83,7 +83,7 @@ Computer vision is hard because there is a huge gap between pixels and meaning. 
 % conclusion: we didn't imitate birds to fly planes, but studying them made us understood aerodynamics
 A first idea to solve computer vision is to understand how human vision works, and transfer this knowledge to computers.
 
-\subsection{What is vision}
+\subsection{Definition of vision}
 Be it a computer or an animal, vision comes down to two components.
 
 First, a \textbf{sensing device} captures as much details from an image as possible. The eye will capture light coming through the iris and project it to the retina, where specialized cells will transmit information to the brain. A camera captures images in a similar way and transmit pixels to the computer. In this part, cameras are better than humans as they can see infrared, see farther away or with more precision.
@@ -103,7 +103,7 @@ There has been a myth that the brain cannot understand itself.  It is compared t
 \end{quote}
 
 
-\subsection{How good is the human visual system}
+\subsection{How good is the human visual system?}
 \paragraph{Speed}
 The human visual system is very efficient. As recognizing threats and reacting to them quickly was paramount to survival, evolution perfected the visual system of mammals for millions of years.
 
@@ -136,8 +136,26 @@ The same might be true with intelligence. Even though it is not possible with to
 % -------------------
 \section{Extracting information from images}
 
-\subsection{Measuring space}
-\subsection{Semantic information}
+We can divide the information gained from images in computer vision in two categories: measurements and semantic information.
+
+\subsection{Vision as a measurement device}
+Robots navigating in an unknown location need to be able to scan their surroundings to compute the best path. Using computer vision, we can measure the space around a robot and create a map of its environment.
+
+Stereo cameras give depth information, like our two eyes, through triangulation. Stereo vision is a big field of computer vision and there is a lot of research seeking to deduce a precise depth map given stereo images.
+
+If we increase the number of viewpoints to cover all the sides of an object, we can create a 3D surface representing the object \cite{multipleview}.
+
+An even more challenging idea might be to reconstruct the 3D model of a monument through all the results of a google image search for this monument \cite{multicommunity}.
+
+There is also research in grasping, where computer vision can help understand the 3D geometry of an object to help a robot grasp it. Through the camera of the robot, we could recognize and find the handle of the object and infer its shape, to then enable the robot to find a good grasping position \cite{grasping}.
+
+
+\subsection{A source of semantic information}
+
+On top of measurement informations, an image contains a very dense amount of \textit{semantic information}. We can label objects in an image, label the whole scene, recognize people, recognize actions, gestures, faces.
+
+Medical images also contain a lot of semantic information. Computer vision can be helpful for a diagnosis based on images of skin cells for instance, to decide if they are cancerous or not.
+
 
 
 % -------------------
@@ -154,6 +172,44 @@ The same might be true with intelligence. Even though it is not possible with to
 % AR
 % VR
 % Space exploration
+
+Cameras are everywhere and the number of images uploaded on internet is growing exponentially. We have images on Instagram, videos on YouTube, feeds of security cameras, medical and scientific images... Computer vision is essential because we need to sort through these images and enable computers to understand their content. Here is a non exhaustive list of applications of computer vision.
+
+
+\paragraph{Special effects}
+Shape and motion capture are new techniques used in movies like Avatar to animate digital characters by recording the movements played by a human actor. In order to do that, we have to find the exact positions of markers on the actor's face in a 3D space, and then recreate them on the digital avatar.
+
+\paragraph{3D urban modeling}
+Taking pictures with a drone over a city can be used to render a 3D model of the city. Computer vision is used to combine all the photos into a single 3D model.
+
+\paragraph{Scene recognition}
+It is possible to recognize the location where a photo was taken. For instance, a photo of a landmark can be compared to billions of photos on google to find the best matches. We can then identify the best match and deduce the location of the photo.
+
+\paragraph{Face detection}
+Face detection has been used for multiple years in cameras to take better pictures and focus on the faces. Smile detection can allow a camera to take pictures automatically when the subject is smiling. Face recognition is more difficult than face detection, but with the scale of today's data, companies like Facebook are able to get very good performance. Finally, we can also use computer vision for biometrics, using unique iris pattern recognition or fingerprints.
+
+\paragraph{Optical Character Recognition}
+One of the oldest successful applications of computer vision is to recognize characters and numbers. This can be used to read zipcodes, or license plates.
+
+\paragraph{Mobile visual search}
+With computer vision, we can do a search on Google using an image as the query.
+
+\paragraph{Self-driving cars}
+Autonomous driving is one of the hottest applications of computer vision. Companies like Tesla, Google or General Motors compete to be the first to build a fully autonomous car.
+
+\paragraph{Automatic checkout}
+Amazon Go is a new kind of store that has no checkout. With computer vision, algorithms detect exactly which products you take and they charge you as you walk out of the store \footnote{see their video \href{https://www.amazon.com/b?node=16008589011}{here}}.
+
+\paragraph{Vision-based interaction}
+Microsoft's Kinect captures movement in real time and allows players to interact directly with a game through moves.
+
+\paragraph{Augmented Reality}
+AR is also a very hot field right now, and multiple companies are competing to provide the best mobile AR platform. Apple released ARKit in June and has already impressive applications \footnote{check out the different \href{http://www.madewitharkit.com}{apps}}.
+
+\paragraph{Virtual Reality}
+VR is using similar computer vision techniques as AR. The algorithm needs to know the position of a user, and the positions of all the objects around.
+
+
 
 
 
