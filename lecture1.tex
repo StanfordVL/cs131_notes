@@ -10,8 +10,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{verbatim}
-% For figures
-\usepackage{graphicx}
+\usepackage{graphicx}       % for figures
 
 
 \title{CS 131 Lecture 1: Course introduction}
@@ -57,7 +56,7 @@ The origins of computer vision go back to an MIT undergraduate summer project in
 
 Computer vision brings together a large set of disciplines. Neuroscience can help computer vision by first understanding human vision, as we will see in section \ref{solving}. Computer vision can be seen as a part of computer science, and algorithm theory or machine learning are essential for developing computer vision algorithms.
 
-We will show in this class how all the fields in figure \ref{fields} are connected, and how computer vision draws inspirations and techniques from them.
+We will show in this class how all the fields in figure \ref{fields} are connected, and how computer vision draws inspiration and techniques from them.
 
 \subsection{A hard problem}
 
@@ -65,13 +64,13 @@ Computer vision has not been solved in 50 years, and is still a very hard proble
 
 \paragraph{Poetry harder than chess}
 The IBM supercomputer Deep Blue defeated for the first time the world chess champion Garry Kasparov in 1997. Today we still struggle to create algorithms that output well formed sentences, let alone poems.
-The gap between these two domains show that what humans call \textit{intelligence} is often not a good criteria to assess the difficulty of a computer task. Deep Blue won through brute force search among millions of possibilities and cannot pretend to have solved intelligence.
+The gap between these two domains show that what humans call \textit{intelligence} is often not a good criteria to assess the difficulty of a computer task. Deep Blue won through brute force search among millions of possibilities and was not more \textit{intelligent} than Kasparov.
 
 \paragraph{Vision harder than 3D modeling}
 It is today easier to create a 3D model of an object up to millimeter precision than to build an algorithm that recognizes chairs. Object recognition is still a very difficult problem, although we are approaching human accuracy.
 
-\paragraph{Why is so hard?}
-Computer vision is hard because there is a huge gap between pixels and meaning. What the computer sees in a $200 \times 200$ RGB image is a set of $120,000$ values. The road from these numbers to meaningful information is very difficult. Arguably, the human brain solves this same difficulty by understanding images that are just projections on our retina converted to neuron signals. The next section will show how studying the brain can help computer vision.
+\paragraph{Why is it so hard?}
+Computer vision is hard because there is a huge gap between pixels and meaning. What the computer sees in a $200 \times 200$ RGB image is a set of $120,000$ values. The road from these numbers to meaningful information is very difficult. Arguably, the human brain's visual cortex solves a problem as difficult: understanding images that are projected on our retina and converted to neuron signals. The next section will show how studying the brain can help computer vision.
 
 
 \section{Understanding human vision} \label{solving}
@@ -86,9 +85,9 @@ A first idea to solve computer vision is to understand how human vision works, a
 \subsection{Definition of vision}
 Be it a computer or an animal, vision comes down to two components.
 
-First, a \textbf{sensing device} captures as much details from an image as possible. The eye will capture light coming through the iris and project it to the retina, where specialized cells will transmit information to the brain. A camera captures images in a similar way and transmit pixels to the computer. In this part, cameras are better than humans as they can see infrared, see farther away or with more precision.
+First, a \textbf{sensing device} captures as much details from an image as possible. The eye will capture light coming through the iris and project it to the retina, where specialized cells will transmit information to the brain through neurons. A camera captures images in a similar way and transmit pixels to the computer. In this part, cameras are better than humans as they can see infrared, see farther away or with more precision.
 
-Second, the \textbf{interpreting device} has to process the information and extract meaning from it. The human brain solves this in multiple steps in different regions of the brain. Computer vision still lag behind human performance in this domain.
+Second, the \textbf{interpreting device} has to process the information and extract meaning from it. The human brain solves this in multiple steps in different regions of the brain. Computer vision still lags behind human performance in this domain.
 
 \subsection{The human visual system}
 
