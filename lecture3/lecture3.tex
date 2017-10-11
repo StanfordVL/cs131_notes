@@ -1,0 +1,383 @@
+\documentclass{article}
+
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{style}
+
+\usepackage[final]{style}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Linear Algebra Primer Part 2}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+  Liangcheng Tao, Vivian Hoang-Dung Nguyen, Roma Dziembaj, Sona Allahverdiyeva \\
+  Department of Computer Science\\
+  Stanford University\\
+  Stanford, CA 94305 \\
+  \texttt{\{lctao13, vnguyen2, romad, sonakhan\}@cs.stanford.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Vectors and Matrices Recap}
+\subsection{Vector}
+A column vector $\textbf{v} \in {\rm I\!R^{nx1}}$ where $$ \textbf{v} = \begin{bmatrix}
+    v_1 \\
+    v_2 \\ 
+    \vdots \\
+    v_n
+  \end{bmatrix}
+ $$
+\newline
+A row vector $\textbf{v}^T \in {\rm I\!R^{1xn}}$ where $$ \textbf{v}^T = \begin{bmatrix}
+    v_1 & v_2 & \cdots & v_n
+  \end{bmatrix}
+ $$
+\newline
+$T$ denotes the transpose operation.
+\newline
+\newline 
+The $\textbf{norm}$ is $$||x||_2 = \sqrt{\sum_{i=1}^{n} x_i^2}$$
+Formally, the norm can also be defined as any function $f:{\rm I\!R^{n}} \mapsto {\rm I\!R}$ that satisfies 4 properties:
+\begin{itemize}
+\item \textbf{Non-negativity:} For all $x \in {\rm I\!R^{n}}$, $f(x) \geq 0$
+\item \textbf{Definiteness:} $f(x) = 0$ if and only if $x = 0$
+\item \textbf{Homogeneity:} For all $x \in {\rm I\!R^{n}}$, $t \in {\rm I\!R}$, $f(tx) = |t|f(x)$
+\item \textbf{Triangle inequality:} For all $x,y \in {\rm I\!R^{n}}$, $f(x+y) \leq f(x) + f(y)$
+\end{itemize}
+\subsubsection{Projection}
+A \textbf{projection} is an inner product (dot product) of vectors. If $B$ is a unit vector, then $A \cdot B$ gives the length of $A$ which lies in the direction of $B$.
+\subsection{Matrix}
+A matrix $\textbf{A} \in {\rm I\!R^{mxn}}$ is an array of numbers with size $m$ by $n$.
+$$ \textbf{A} = \begin{bmatrix}
+    a_{11} & a_{12} & a_{13} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & a_{23} & \cdots & a_{2n} \\ 
+    \vdots & & & & \vdots \\
+    a_{m1} & a_{m2} & a_{m3} & \cdots & a_{mn}
+  \end{bmatrix}
+$$
+\newline
+If $m=n$, we say that $\textbf{A}$ is square.
+\subsubsection{An Application of Matrices}
+Grayscale images have one number per pixel and are stored as an $mxn$ matrix. Color images have 3 numbers per pixel - red, green, and blue brightnesses (RGB), and are stored as an $mxnx3$ matrix.
+\section{Transformation Matrices}
+Matrices can be	used to transform vectors in useful ways, through multiplication: 
+x’= Ax. The simplest application of that is through scaling, or multiplying a scaling matrix with scalars on its diagonal by the vector. 
+
+We can also use matrices to rotate vectors. When we multiply a matrix and a vector, the resulting x coordinate is the original vector \textbf{dot} the first row. 
+
+
+In order to rotate a vector by an angle $\theta$, counter-clockwise, we see that we need our 
+
+$x'= cos\theta x -sin \theta y$ and
+
+$y'= cos\theta y +sin \theta x$
+
+therefore, we multiply it by the matrix
+
+\[
+M=
+  \begin{bmatrix}
+    cos\theta & -sin\theta \\
+    sin\theta & cos\theta
+  \end{bmatrix}
+\]
+
+which gives us that P' = R P. 
+
+We can also use multiple matrices to transform a point. For example, $p' = R_2 R_1 S p$. The transformations are applied one after another, from right to left. In our example, this would be $(R_2(R_1(S p)))$. 
+
+In order to also be able to translate vectors, we have to implement a somewhat hacky solution of adding a "1" at the very end of the vector. That way, with these "homogeneous coordinates", we can also translate vectors. The multiplication works out so the rightmost column of our matrix gets added to the respective coordinates. A homogenous matrix will have [0 0 1] in the bottom row to ensure that the elements get added correctly, and the resulting vector has '1' at the bottom, too. 
+
+By convention, in homogeneous coordinates, we divide the result by its last coordinate after doing matrix multiplication. 
+
+\[
+  \begin{bmatrix}
+    x \\
+    y \\ 
+    7
+  \end{bmatrix}
+\]
+
+\[
+    \begin{bmatrix}
+    x/7 \\
+    y/7 \\ 
+    1
+  \end{bmatrix}
+  \]
+
+So to obtain the result of 
+$P(x,y) -> P' = (s_x x, s_y y)$
+
+we have to first $P = (x, y) -> (x,y,1)$ and then $P' = (s_x x, s_y y) -> (s_x x, s_y y, 1)$ so we can then do the matrix multiplication S*P. Though, we have  to note that scaling and translating is not the same as translating and scaling. In other words, $T*S*P \neq S*T*P$
+
+Any rotation matrix R belongs to the cateogry of normal matrices that satisfies interesting properties. For example, $R \dot R^T = I$ and $det(R) = 1$
+
+The rows of a rotation matrix are always mutually perpendicular (a.k.a. orthogonal) unit vectors - this is what allows for it to satisfy some of the few unique properties mentioned above. 
+
+\section{Matrix Inverse}
+Given a matrix $A$, its inverse $A^{-1}$ is a matrix such that:
+$$AA^{-1} = A^{-1}A = I$$
+where $I$ is the identity matrix of the same size.
+
+An example of a matrix inverse is:
+$$
+  \begin{bmatrix}
+    2 & 0 \\
+    0 & 3 \\ 
+  \end{bmatrix}^{-1}
+  =
+  \begin{bmatrix}
+    \frac{1}{2} & 0 \\
+    0 & \frac{1}{3} \\ 
+  \end{bmatrix}
+$$
+
+A matrix does not necessarily have an inverse. If $A^{-1}$ exists, A is known as \textit{invertible} or \textit{non-singular}. 
+
+Some useful identities for matrices that are invertible are:
+\begin{itemize}
+\item $(A^{-1})^{-1} = A$
+\item $(AB)^{-1} = B^{-1}A^{-1}$
+\item $A^{-T} \triangleq (A^T)^{-1} = (A^{-1})^T$
+\end{itemize}
+
+\subsection{Pseudoinverse}
+
+Frequently in linear algebra problems, you want to solve the equation $AX=B$ for $X$. You would like to be able to compute $A^{-1}$ and multiply both sides to get $X=A^{-1}B$. In python, this command would be: np.linalg.inv(A)*B.
+
+However, for large floating point matrices, calculating inverses can be very expensive and possibly inaccurate. An inverse could also not even exist for A. What should we do?
+
+Luckily, we have what is known as a \textit{pseudoinverse}. This other matrix can be used to solve for AX=B. Python will try many methods, including using the pseudoinverse, if you use the following command: np.linalg.solve(A,B). Additionally, with the pseudoinverse, even if there is no solution to $AX=B$, Python can find the closest solution instead.
+
+\section{Matrix Rank}
+\begin{itemize}
+\item The rank of a transformation matrix  $A$ tells you how many dimensions it transforms a matrix to. 
+
+\item col-rank($A$) = maximum number of linearly independent column vectors of $A$
+
+\item row-rank($A$) = maximum number of linearly independent row vectors of $A$.
+Column rank always equals row rank. 
+
+\item For transformation matrices, the rank tells you the dimensions of the output. 
+
+\item For instance, if rank of $A$ is $1$, then the transformation $p' =Ap$ points onto a line.
+
+\item Full rank matrix- if $mxm$ and rank is $m$
+
+\item Singular matrix- if $mxm$ matrix rank is less than $m$, because at least one dimension is getting collapsed. (No way to tell what input was from result) --> inverse does not exist for non-square matrices. 
+\end{itemize}
+
+\section{Eigenvalues and Eigenvectors (SVD)}
+
+\subsection{Definitions}
+An \textit{eigenvector} \textbf{x} of a linear transformation A is a non-zero vector that, when A is applied to it, does not change its direction.
+Applying A to the eigenvector scales the eigenvector by a scalar value $\lambda$, called an \textit{eigenvalue}.
+
+The following equation describes the relationship between eigenvalues and eigenvectors:
+$$A\mathbf{x}=\lambda \mathbf{x}, \quad \mathbf{x}\neq \mathbf{0}$$
+
+\subsection{Finding eigenvectors and eigenvalues}
+If we want to find the eigenvalues of A, we can manipulate the above definition as follows:
+
+$$A\mathbf{x}=\lambda \mathbf{x}, \quad \mathbf{x}\neq \mathbf{0}$$
+$$A\mathbf{x}=(\lambda I \mathbf{x}), \quad \mathbf{x}\neq \mathbf{0}$$
+$$(\lambda I-A)\mathbf{x}=\mathbf{0}, \quad \mathbf{x}\neq \mathbf{0}$$
+
+Since we are looking for non-zero \textbf{x}, we can equivalently write the above relation as:
+
+$$|\lambda I-A|=\mathbf{0}$$
+
+Solving this equation for $\lambda$ gives the eigenvalues of A, and these can be substituted back into the original equation to find the corresponding eigenvectors.
+
+\subsection{Properties}
+\begin{itemize}
+\item The trace of A is equal to the sum of its eigenvalues:
+$$tr(A)=\sum_{i=1}^{n} \lambda_i$$
+\item The determinant of A is equal to the product of its eigenvalues:
+$$|A|=\prod_{i=1}^{n} \lambda_i$$
+\item The rank of A is equal to the number of non-zero eigenvalues of A.
+\item The eigenvalues of a diagonal matrix $D = diag(d_1, \ldots, d_n)$ are just the diagonal entries $d_1, \ldots d_n$.
+\end{itemize}
+
+\subsection{Spectral Theory}
+\subsubsection{Definitions}
+\begin{itemize}
+\item An \textit{eigenpair} is the pair of an eigenvalue and its associated eigenvector.
+\item An \textit{eigenspace} of A associated with $\lambda$ is the space of vectors where:
+$$(A-\lambda I) = 0$$
+\item The \textit{spectrum} of A is the set of all its eigenvalues:
+$$\sigma(A)=\lbrace\lambda \in \mathbb{C}: \lambda I - A \textrm{ is singular}\rbrace$$
+Where $\mathbb{C}$ is the space of all eigenvalues of A
+\item The \textit{spectral radius} of A is the magnitude of its largest magnitude eigenvalue:
+$$\rho(A)=max\lbrace |\lambda_1|, \ldots, |\lambda_n| \rbrace$$
+
+\end{itemize}
+\subsubsection{Theorem: Spectral radius bound} Spectral radius is bounded by the infinity norm of a matrix:
+$$\rho(A)=\lim_{k\to\infty} ||A^k||^{1/k}$$
+\textit{Proof}:
+$$|\lambda|^k||\mathbf{v}||=||\lambda|^k\mathbf{v}||=||A^k\mathbf{v}||$$
+By the Cauchy–Schwarz inequality ($||\mathbf{u}\mathbf{v}|| \leq ||\mathbf{u}||\cdot||\mathbf{v}||$):
+$$|\lambda|^k||\mathbf{v}|| \leq ||A^k||\cdot||\mathbf{v}||$$
+Since $\mathbf{v} \neq 0$:
+$$|\lambda|^k \leq ||A^k||$$
+And we thus arrive at:
+$$\rho(A)=\lim_{k\to\infty} ||A^k||^{1/k}$$
+
+\subsection{Diagonalization}
+An nxn matrix A is diagonalizable if it has n linearly independent eigenvectors.
+
+Most square matrices are diagonalizable
+\begin{itemize}
+\item Normal matrices are diagonalizable
+
+Note: Normal matrices are matrices that satisfy:
+$$A^* A=AA^*$$
+Where $A^*$ is the complex conjugate of $A$
+\item Matrices with n distinct eigenvalues are diagonalizable
+\end{itemize}
+
+\textbf{Lemma:} Eigenvectors associated with distinct eigenvalues are linearly independent.
+
+To diagonalize the matrix A, consider its eigenvalues and eigenvectors. We can construct matrices D and V, where D is the diagonal matrix of the eigenvalues of A, and V is the matrix of corresponding eigenvectors:
+$$D=\begin{bmatrix}
+    \lambda_1 & & \\
+    & \ddots &    \\
+    & & \lambda_n
+\end{bmatrix}
+$$
+
+$$V=\begin{bmatrix}
+    v_1 & v_2 & \dots & v_n
+\end{bmatrix}
+$$
+
+Since we know that:
+$$AV=VD$$
+We can diagonalize A by:
+$$A=VDV^{-1}$$
+If all eigenvalues are unique, then V is orthogonal. Since the inverse of an orthogonal matrix is its transpose, we can write the diagonalization as:
+$$A=VDV^T$$
+\subsection{Symmetric Matrices}
+If A is symmetric, then all its eigenvalues are real, and its eigenvectors are orthonormal. Recalling the above diagonalization equation, we can diagonalize A by:
+$$A=VDV^T$$
+
+Using the above relation, we can also write the following relationship:
+
+Given $y=V^Tx$:
+$$x^TAx=x^TVDV^Tx=y^TDy=\sum_{i=1}^{n} \lambda_i y_i^2$$
+
+Thus, if we want to do the following maximization:
+$$ max_{x\in\mathbb{R}^n} (x^TAx) \quad \textrm{ subject to   } ||x||_2^2=1$$
+
+Then the maximizing x can be found by finding the eigenvector corresponding to the largest eigenvalue of A.
+
+\subsection{Applications}
+Some applications of eigenvalues and eigenvectors are:
+\begin{itemize}
+\item PageRank
+\item Schroedinger's equation
+\item Principle component analysis (PCA)
+\end{itemize}
+\section{Matrix Calculus}
+\subsection{The Gradient}
+If a function $f:{\rm I\!R^{mxn}} \mapsto {\rm I\!R}$ takes as input a matrix $A$ of size $mxn$ and returns a real value, then the gradient of $f$ is
+\newline
+$$\nabla_A f(A) \in {\rm I\!R^{mxn}} = \begin{bmatrix}
+    \frac{\partial f(A)}{\partial A_{11}} & \frac{\partial f(A)}{\partial A_{12}} & \cdots & \frac{\partial f(A)}{\partial A_{1n}} \\
+    \frac{\partial f(A)}{\partial A_{21}} & \frac{\partial f(A)}{\partial A_{22}} & \cdots & \frac{\partial f(A)}{\partial A_{2n}} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \frac{\partial f(A)}{\partial A_{m1}} & \frac{\partial f(A)}{\partial A_{m2}} & \cdots & \frac{\partial f(A)}{\partial A_{mn}}
+\end{bmatrix}
+$$
+\newline
+Every entry in the matrix is: $$\nabla_A f(A)_{ij} = \frac{\partial f(A)}{\partial A_{ij}}$$
+\newline
+The size of $\nabla_A f(A)$ is always the same as the size of $A$. Thus, if $A$ is a vector $x$:
+$$\nabla_x f(x) = \begin{bmatrix}
+	\frac{\partial f(x)}{\partial x_{1}} \\
+    \frac{\partial f(x)}{\partial x_{2}} \\
+    \vdots \\
+    \frac{\partial f(x)}{\partial x_{n}} 
+\end{bmatrix}
+$$
+\subsection{The Gradient: Properties}
+\begin{itemize}
+\item $\nabla_x (f(x) + g(x)) = \nabla_x f(x) + \nabla_x g(x)$
+\item For $t \in {\rm I\!R}$, $\nabla_x (t f(x)) = t \nabla_x f(x)$
+\end{itemize}
+\subsection{The Hessian}
+The Hessian matrix with respect to $x$ can be written as $\nabla_x^2 f(x)$ or as $H$. It is an $nxn$ matrix of partial derivatives
+\newline
+$$\nabla_x^2 f(x) \in {\rm I\!R^{nxn}} = \begin{bmatrix}
+    \frac{\partial^2 f(x)}{\partial x_1^2} & \frac{\partial^2 f(x)}{\partial x_1 \partial x_2} & \cdots & \frac{\partial^2 f(x)}{\partial x_1 \partial x_n} \\
+    \frac{\partial^2 f(x)}{\partial x_2 \partial x_1} & \frac{\partial^2 f(x)}{\partial x_2^2} & \cdots & \frac{\partial^2 f(x)}{\partial x_2 \partial x_n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \frac{\partial^2 f(x)}{\partial x_n \partial x_1} & \frac{\partial^2 f(x)}{\partial x_n \partial x_2} & \cdots & \frac{\partial^2 f(x)}{\partial x_n^2} \\
+\end{bmatrix}
+$$
+\newline
+Every entry in the matrix is: $$\nabla_x^2 f(x)_{ij} = \frac{\partial^2 f(x)}{\partial x_i \partial x_j}$$
+\newline
+It's important to note that the Hessian is the gradient of \textbf{every entry} of the gradient of the vector. For instance, the first column of the Hessian is the gradient of $\frac{\partial f(x)}{\partial x_1}$.
+\subsection{The Hessian: Properties}
+Schwarz's theorem: The order of partial derivatives doesn't matter so long as the second derivative exists and is continuous.
+\newline
+\newline
+Thus, the Hessian is always symmetric:
+$$\frac{\partial^2 f(x)}{\partial x_i \partial x_j} = \frac{\partial^2 f(x)}{\partial x_j \partial x_i}$$
+\subsection{Example Calculations}
+\subsubsection{Example Gradient Calculation}
+For $x \in {\rm I\!R^{n}}$, let $f(x) = b^Tx$ for some known vector $b \in {\rm I\!R^{n}}$
+$$ f(x) = \begin{bmatrix}
+    b_1 & b_2 & \cdots & b_n
+  \end{bmatrix}^T
+  \begin{bmatrix}
+  	x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+  \end{bmatrix}
+ $$
+\newline
+Thus, $$f(x) = \sum_{i=1}^{n} b_i x_i$$
+$$\frac{\partial f(x)}{\partial x_k} = \frac{\partial}{\partial x_k}\sum_{i=1}^{n} b_i x_i = b_k$$
+Therefore, we can conclude that: $\nabla_x b^Tx = b$.
+\subsubsection{Example Hessian Calculation}
+Consider the quadratic function $f(x) = x^TAx$
+$$f(x) = \sum_{i=1}^{n} \sum_{j=1}^{n} A_{ij} x_i x_j$$
+$$\frac{\partial f(x)}{\partial x_k} = \frac{\partial}{\partial x_k}\sum_{i=1}^{n}\sum_{j=1}^{n} A_{ij} x_i x_j$$
+$$= \frac{\partial}{\partial x_k}[\sum_{i \neq k} \sum_{j \neq k} A_{ij} x_i x_j + \sum_{i \neq k} A_{ik} x_i x_k + \sum_{j \neq k} A_{kj} x_k x_j + A_{kk}x_k^2]$$
+$$= \sum_{i \neq k} A_{ik} x_i + \sum_{j \neq k} A_{kj} x_j + 2 A_{kk}x_k$$
+$$= \sum_{i=1}^{n} A_{ik} x_i + \sum_{j=1}^{n} A_{kj} x_j = 2\sum_{i=1}^{n} A_{ki} x_i$$
+$$\frac{\partial^2 f(x)}{\partial x_k \partial x_l} = \frac{\partial}{\partial x_k}[\frac{\partial f(x)}{\partial x_l}] = \frac{\partial}{\partial x_k}[\sum_{i=1}^{n} 2 A_{li} x_i]$$
+$$= 2A_{lk} = 2A_{kl}$$
+Thus, $$\nabla_x^2 f(x) = 2A$$
+% References
+% \small
+% \bibliographystyle{plain}
+% \bibliography{bibliography}
+\end{document}
