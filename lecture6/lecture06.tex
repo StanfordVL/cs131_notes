@@ -22,44 +22,45 @@
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{\{wwang13, tantonio, hesamh\}@cs.stanford.edu} \\
+  \texttt{\{wwang13, tantonio\}@cs.stanford.edu; hesamh@stanford.edu} \\
 }
 
 \begin{document}
 \maketitle
 \section{Introduction}
-This lecture covers edge detection, Hough transformations, and RANSAC
+This lecture covers edge detection, Hough transformations, and RANSAC.
+The detection of edges provides meaningful semantic information that facilitate the understanding of an image. This can help analyzing the shape of elements, extracting image features, and understanding changes in the properties of depicted scenes such as discontinuity in depth, type of material, and illumination, to name a few. We will explore the application of Sobel and Canny edge detection techniques.
+The next section introduces the Hough transform, used for the detection of parametric models in images;for example, the detection of linear lines, defined by two parameters, is made possible by the Hough transform. Furthermore, this technique can be generalized to detect other shapes (e.g., circles).
+However, as we will see, the use of Hough transform is not effective in fitting models with a high number of parameters. To address this model fitting problem, the random sampling consensus (RANSAC) is introduced in the last section; this non-deterministic approach repeatedly samples subsets of data, uses them to fit the model, and classifies the remaining data points as "inliers" or "outliers" depending on how well they can be explained by the fitted model (i.e., their proximity to the model). The result is used for a final selection of data points used in achieving the final model fit. A general comparison of RANSAC and Hough transform is also provided in the last section.
 
 \section{Edge Detection}
 \subsection{Motivation for Edge Detection}
-Edge detection is extremely relevant for mammalian eyes.  Certain neurons within the brain are adept at recognizing straight lines.  The information from these neurons is put together in the brain for recognition of objects.  In fact, edges are so useful for recognition in humans, line drawings are almost as recognizable as the original image.
+Edge detection is extremely relevant for mammalian eyes.  Certain neurons within the brain are adept at recognizing straight lines.  The information from these neurons is put together in the brain for recognition of objects.  In fact, edges are so useful for recognition in humans, line drawings are almost as recognizable as the original image (Fig. 1).We would like to be able to extract information, recognize objects, and recover the geometry and viewpoint of an image.
 
 \includegraphics[width=\textwidth]{line_drawings.png}
 Fig. 1. Certain areas of the brain react to edges; the line drawings are as recognizable as the original image; image source: \cite{line_drawings}
 
-We would like to be able to extract information, recognize objects, and recover the geometry and viewpoint of an image
 \subsection{Edge Basics}
-There are four possible sources of edges in an image:
-\begin{itemize}
-  \item Surface normal discontinuity
-  \item Depth discontinuity
-  \item Surface color discontinuity
-  \item Illumination discontinuity
-\end{itemize}
+There are four possible sources of edges in an image:  surface normal discontinuity (surface changes direction sharply), depth discontinuity (one surface behind another), surface color discontinuity (single surface changes color), illumination discontinuity (shadows/lighting).  These discontinuities are demonstrated in the Fig.2a; different types of edges can be seen in Fig.2b:
+\FloatBarrier
+\includegraphics[width=\textwidth]{overall.png}
+\FloatBarrier
+Fig. 2. Different types of edges due to discontinuities in surface color, surface depth, and surface normal (source: lecture notes)
+
 Edges occur in images when the magnitude of the gradient is high
 \subsection{Finding the Gradient}
 In order to find the gradient, we must first find the derivatives in both the $x$ and $y$ directions
 \subsubsection{Discrete Derivatives}
 \begin{align*}
-\frac{dy}{dx} &= \lim_{\delta x\rightarrow0}\frac{f(x)-f(x-\delta x)}{\delta x} = f'(x)\\
-\frac{dy}{dx} &= \frac{f(x)-f(x-1}{1} = f'(x)\\
-\frac{dy}{dx} &= f(x)-f(x-1) = f'(x)
+\frac{df(x)}{dx} &= \lim_{\delta x\rightarrow0}\frac{f(x)-f(x-\delta x)}{\delta x} = f'(x)\\
+\frac{df(x)}{dx} &= \frac{f(x)-f(x-1}{1} = f'(x)\\
+\frac{df(x)}{dx} &= f(x)-f(x-1) = f'(x)
 \end{align*}
 It is also possible to take the derivative three different ways
 \begin{itemize}
 \item Backward: $f'(x) = f(x)-f(x-1)$
-\item Forward: $f'(x) = f(x)-f(x+1)$
-\item Central: $f'(x) = f(x+1)-f(x-1)$
+\item Forward: $f'(x) = f(x+1)-f(x)$
+\item Central: $f'(x) = \frac{(x+1)-f(x-1)}{2}$
 \end{itemize}
 Each of these can also be represented as a filter (convoluting the filter with the image gives the derivative)
 \begin{itemize}
@@ -166,7 +167,7 @@ This equation represents a line in $a,b$ space, and each $a,b$ point on the line
 Thus, for each pixel $x_i,y_i$ in our set of edge pixels, we transform it into $a,b$ space to get a line.
 
 \includegraphics[width=\textwidth]{hough_transform.png}
-Fig. 2. The transformation from the original space to the Hough space; source: lecture slides
+Fig. 3. The transformation from the original space to the Hough space; source: lecture slides
 
 The intersection of lines in $a,b$ space represent the $a,b$ values that compromise a line $y_i = a*x_i + b$ passing through those points. Example:
 Say we have two points $x_1,y_1$ = $(1,1)$, and $x_2,y_2$ = $(2,3)$.
@@ -174,7 +175,7 @@ We transform these points into $a,b$ space with the lines $b = -a*1 + 1$ and $b 
 Solving for the intersection of these two lines gives us $a=2$ and $b=-1$. This intersection point in $(a,b)$ space gives us the values for the line that goes through both points in $x,y$ space.
 
 \includegraphics[width=\textwidth]{hough_transform2.png}
-Fig. 3. The lines passing through a point in the original space; source: lecture slides
+Fig. 4. The lines passing through a point in the original space; source: lecture slides
 
 \subsection{Accumulator Cells}
 In order to get the "best" lines, we quantize the $a,b$ space into cells. For each line in our $a,b$ space, we add a "vote" or a count to each cell that it passes through. We do this for each line, so at the end, the cells with the most "votes" have the most intersections and therefore should correspond to real lines in our image.
@@ -182,7 +183,7 @@ In order to get the "best" lines, we quantize the $a,b$ space into cells. For ea
 The algorithm for Hough transform in $a,b$ space is as follows:
 
 \includegraphics[width=\textwidth]{hough_transform3.png}
-Fig. 4. The Hough transform algorithm; source: lecture slides
+Fig. 5. The Hough transform algorithm; source: lecture slides
 
 \subsection{Hough transform in $\rho, \theta$ space}
 A problem with using $a,b$ space to represent lines is that they are limited and cannot represent vertical lines.
@@ -191,7 +192,7 @@ $$ x*\cos\theta + y*\sin\theta = \rho$$
 In $\rho, \theta$ space, points are not represented as lines but instead as sine wave-like functions.
 
 \includegraphics[width=\textwidth]{hough_transform4.png}
-Fig. 5. The Hough transform in $\rho, \theta$ space; source: lecture slides
+Fig. 6. The Hough transform in $\rho, \theta$ space; source: lecture slides
 
 The intersection of these functions in $\rho, \theta$ space still correspond to the $\rho, \theta$ that comprise a line passing through those points.
 
@@ -208,27 +209,28 @@ With the increase in model complexity (i.e., the number of parameters), the Houg
 \subsection{Introduction to RANSAC Basics}
 The RANSAC algorithm is used for estimating the parameters of models in images (i.e., model fitting). The basic idea behind RANSAC is to solve the fitting problem many times using randomly selected minimal subsets of the data and choosing the best performing fit. To achieve this, RANSAC tries to iteratively identify the data points that correspond to model we are trying to fit.
 
-Fig. 6a illustrates an example where a linear model (i.e., 2 parameters) is to be fitted to the data; while the majority of data points fit a linear model, the two points in the top right corner can significantly affect the accuracy of overall fit (if they are included in the fit). The RANSAC algorithm aims to address this challenge by identifying the "inliers" and "outliers" in the data.
+Fig. 7a illustrates an example where a linear model (i.e., 2 parameters) is to be fitted to the data; while the majority of data points fit a linear model, the two points in the top right corner can significantly affect the accuracy of overall fit (if they are included in the fit). The RANSAC algorithm aims to address this challenge by identifying the "inliers" and "outliers" in the data.
 
 RANSAC randomly selects samples of the data, with the assumption that if enough samples are chosen, there will be a low probability that at all samples provides a bad fit.
 
-\includegraphics[width=\textwidth]{ransac1.jpg}
-Fig. 6. a) the outliers are detected by RANSAC to improve parameter estimation; b) RANSAC application for image stitching; sources(\cite{prince2012computer}and Derek Hoiem)
+\includegraphics[width=\textwidth]{ransac1.png}
+Fig. 7. a) the outliers are detected by RANSAC to improve parameter estimation; b) RANSAC application for image stitching; sources(\cite{prince2012computer}and Derek Hoiem)
 
 \subsection{Applications}
 The RANSAC algorithm can be used to estimate parameters of different models; this is proven beneficial in image stitching (Fig. 6b), outlier detection, lane detection (linear model estimation), and stereo camera calculations.
 
 \subsection{The Algorithm}
-The RANSAC algorithm iteratively samples nominal subsets of the original data (e.g., 2 points for line estimation); the model is fitted to each sample, and the number of "inliers" corresponding to this fit is calculated; this includes the data points that are close to the fitted model. The points closer than a threshold (e.g., 2 standard deviation, or a pre-determined number of pixels) are considered "inliers". The fitted model is considered good if a big fraction of the data is considered as "inliers" for that fit. In the case of a good fit, the model is re-fitted using all the inliers, and the outliers are discarded. This process is repeated, and model estimates with a big enough fraction of inliers (e.g., bigger than a pre-specified threshold) are compared to choose the best-performing fit. Fig. 7 illustrates this process for a linear model and its three samples. The third sample (Fig. 6c) provides the best fit as it includes the most number of inliers.
+The RANSAC algorithm iteratively samples nominal subsets of the original data (e.g., 2 points for line estimation); the model is fitted to each sample, and the number of "inliers" corresponding to this fit is calculated; this includes the data points that are close to the fitted model. The points closer than a threshold (e.g., 2 standard deviation, or a pre-determined number of pixels) are considered "inliers". The fitted model is considered good if a big fraction of the data is considered as "inliers" for that fit. In the case of a good fit, the model is re-fitted using all the inliers, and the outliers are discarded. This process is repeated, and model estimates with a big enough fraction of inliers (e.g., bigger than a pre-specified threshold) are compared to choose the best-performing fit. Fig. 8 illustrates this process for a linear model and its three samples. The third sample (Fig. 8c) provides the best fit as it includes the most number of inliers.
 
-\includegraphics[width=\textwidth]{ransac2.jpg}
-Fig. 7. The demonstration of the RANSAC algorithm for a linear model estimation and three random samples; source(\cite{prince2012computer})
+\includegraphics[width=\textwidth]{ransac2.png}
+Fig. 8. The demonstration of the RANSAC algorithm for a linear model estimation and three random samples; source(\cite{prince2012computer})
 
 
-\includegraphics[width=0.9\textwidth]{ransac3.jpg}
-Fig. 8. The pseudocode for RANSAC; source(\cite{forsyth2011computer})
+\includegraphics[width=0.9\textwidth]{ransac3.png}
 
-The RANSAC is detailed in Fig. 8. The major steps included in the RANSAC loop:
+Fig. 9. The pseudocode for RANSAC; source(\cite{forsyth2011computer})
+
+The RANSAC is detailed in Fig. 9. The major steps included in the RANSAC loop:
 
 \begin{enumerate}
   \item Randomly select a seed group from data.
@@ -239,22 +241,22 @@ The RANSAC is detailed in Fig. 8. The major steps included in the RANSAC loop:
 \end{enumerate}
 
 \subsection{How Many Samples are Needed?}
-The RANSAC is a non-deterministic model fitting approach; this means that the number of samples need to be large enough to provide a high confidence estimate of parameters. The number of required samples depends on 1) the number of fitted parameters and 2) the amount of noise. Fig. 9 lists the minimum number of samples needed based on p=0.99 and variations of sample size (i.e., the number of parameters) and the fraction of outliers (i.e., noise). More samples are needed for estimating bigger models and noisier data.
+The RANSAC is a non-deterministic model fitting approach; this means that the number of samples need to be large enough to provide a high confidence estimate of parameters. The number of required samples depends on 1) the number of fitted parameters and 2) the amount of noise. Fig. 10 lists the minimum number of samples needed based on p=0.99 and variations of sample size (i.e., the number of parameters) and the fraction of outliers (i.e., noise). More samples are needed for estimating bigger models and noisier data.
 A large enough number of samples ($k$) need to be chosen such that a low probability of only seeing bad samples (${P_f}$) is guaranteed:
 $${P_f}= (1-W^n)^k= 1-p$$
 where $W$ and $n$ are respectively the fraction of inliers and the number of points needed for model fitting. The minimum number of samples:
 $$k=\frac{log(1-p)}{log(1-W^n)}$$
 
-\includegraphics[width=\textwidth]{ransac4.jpg}
-Fig. 9. The number of samples for different choices of noise population and model size; source: David Lowe)
+\includegraphics[width=\textwidth]{ransac4.png}
+Fig. 10. The number of samples for different choices of noise population and model size; source: David Lowe)
 
 \subsection{Advantages, Limitations, and Considerations}
 The advantages of the RANSAC lie in its simple implementation and wide application range in the model fitting domain. Other advantages include its computational efficiency; the sampling approach provides a better alternative to solving the problem for all possible combinations of features.
 
 In some cases, it'd be more efficient to use the Hough transform instead of the RANSAC:
 \begin{enumerate}
-  \item 1) The number of parameters are small; for example, linear model estimation (2 parameters) can be achieved efficiently using Hough transform, while image stitching requires a more computationally frugal approach such as RANSAC.
-  \item 2) If the noise population is high; as we saw earlier, increase in noise requires a more extensive sampling approach (higher number of samples), increasing computation cost. Increased noise reduces the chances of correct parameter estimation and the accuracy of inlier classification.
+  \item The number of parameters are small; for example, linear model estimation (2 parameters) can be achieved efficiently using Hough transform, while image stitching requires a more computationally frugal approach such as RANSAC.
+  \item If the noise population is high; as we saw earlier, increase in noise requires a more extensive sampling approach (higher number of samples), increasing computation cost. Increased noise reduces the chances of correct parameter estimation and the accuracy of inlier classification.
 \end{enumerate}
 
 The poor performance in highly noisy data is a primary limitation of the RANSAC; this is espcially crucial as real-world problems have high rate of outliers.
