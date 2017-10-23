@@ -62,6 +62,7 @@ Below is the general approach associated with employing local invariant features
 \end{enumerate}
 \begin{center}
 	\includegraphics[scale=0.5]{local_feature_ex.png}\\
+  	\textbf{Figure 1:} Example of local features within similar pictures being identified and normalized, then defined by a descriptor and compared to each other for similarity. Source: Lecture 6 slides. \\
 \end{center}
 \subsection{Requirements}
 Good local features should have the following properties.
@@ -122,6 +123,7 @@ $$\theta = det(M) - \alpha \textnormal{trace} (M)^2 $$
 where $\alpha$ is a constant around .04-.06. 
 \begin{center}
 	\includegraphics[scale=0.5]{eigenvalues_harris.png}\\
+    \textbf{Figure 2:} Visualization of theta thresholds from Corner Response Function indicating Corner, Edge, or Flat regions. Source: Lecture 6 slides\\
 \end{center}
 
 This is not rotation invariant. To allow for rotation invariance, we will smooth with Gaussian, where the Gaussian already performs the weighted sum:
@@ -137,19 +139,27 @@ g( \sigma )
 Ultimately, this is an example of keypoints that the Harris detector can identify:
 \begin{center}
 	\includegraphics[scale=0.5]{harris_response.png}\\
+    \textbf{Figure 3:} Example of Harris keypoint detection on an image. Source: Lecture 6 slides \\
 \end{center}
 
 %Scale invariant keypoint detection - Wesley Olmsted
 \section{Scale Invariant Keypoint Detection}
 \subsection{Motivation}
 Earlier we used the Harris detector to find keypoints or corners. The Harris detector used small windows in order to maintain good locality. Since the Harris detector uses this small window, if an image is scaled up, the window now no longer sees the same gradients it had with a smaller image.\\
-\includegraphics{sift_scale_invariant.jpg} \cite{opencv}\\
+\begin{center}
+	\includegraphics{sift_scale_invariant.jpg} \\
+    \textbf{Figure 4:} Harris detector windows on an increased scale. Source: $https://docs.opencv.org/3.1.0/sift_scale_invariant.jpg$
+\end{center}
+Figure 4:
 Looking at the above image, we can see how the three windows on the right no longer see the sharp gradient in the x and y direction. All three now would classify that space as being edge. In order to address this problem, we need to normalize the scale of the detector.
 \subsection{Solution}
 We can design a function to be scalable meaning that corresponding regions are the same regardless of the scale. We can use a circle to represent this scalable function. A point on the circle is a function of the region size of the circle's radius. 
 \subsection{General Approach}
 We can find the local max of a function. Relative to the local max, the region size should be the same regardless of the scale. This also means that the region size is co-variant with the image scale. A "good" function means that there is a single, distinct local max. This means in general, we should use a function that responds well to stark contrasts in intensity. \\
-\includegraphics[scale=0.5]{scaleinvariant.png}\\
+\begin{center}
+	\includegraphics[scale=0.5]{scaleinvariant.png}\\
+    \textbf{Figure 5:} Examples of different functions for finding local maxes. Source: Lecture 7 slides.
+\end{center}
 Our function is defined as: $f = kernel*image$. Two kernels we could use are Laplacian or Difference of Gaussians. $$L = \sigma^2(G_{xx}(x,y,\sigma)+G_{yy}(x,y,\sigma))$$ $$DoG = G(x,y,k\sigma) - G(x,y,\sigma)$$ $$G(x,y,\sigma) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2+y^2}{2\sigma^2}}$$
 Both of these kernels are also scale and rotation invariant.
 
