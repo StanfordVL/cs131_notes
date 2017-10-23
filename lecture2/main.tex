@@ -151,7 +151,7 @@ Without Gray Cards, we need to guess which pixels correspond to white objects.  
 
 \paragraph{Gray World Assumption} Under this model, we assume that the average pixel value in the photo ($r_{ave},\ g_{ave},\ b_{ave}$) is gray and scale the image pixels by $\frac{1}{r_{ave}},\ \frac{1}{g_{ave}},$ and $\frac{1}{b_{ave}}$
 
-\paragraph{Brightest Pixel Assumption} this works on non-staurated images and assumes that image highlights usually have the color of the light source (which is usually white).  So, it corrects white balance by weighting each channel inversely proportional to the values of the brightest pixels
+\paragraph{Brightest Pixel Assumption} this works on non-saturated images and assumes that image highlights usually have the color of the light source (which is usually white).  So, it corrects white balance by weighting each channel inversely proportional to the values of the brightest pixels
 
 \paragraph{Gamut Mapping} The \href{https://en.wikipedia.org/wiki/Gamut}{Gamut} of an image is the set of all pixel colors displayed in an image (in mathematical terms, this is a "convex hull" and a subset of all possible color combinations).  We can then apply a transformation to the image that maps the gamut of the image to the gamut of a "standard" image under white light.
 
