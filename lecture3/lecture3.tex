@@ -45,7 +45,7 @@
 \subsection{Vector}
 A column vector $\textbf{v} \in {\rm I\!R^{nx1}}$ where $$ \textbf{v} = \begin{bmatrix}
     v_1 \\
-    v_2 \\ 
+    v_2 \\
     \vdots \\
     v_n
   \end{bmatrix}
@@ -58,7 +58,7 @@ A row vector $\textbf{v}^T \in {\rm I\!R^{1xn}}$ where $$ \textbf{v}^T = \begin{
 \newline
 $T$ denotes the transpose operation.
 \newline
-\newline 
+\newline
 The $\textbf{norm}$ is $$||x||_2 = \sqrt{\sum_{i=1}^{n} x_i^2}$$
 Formally, the norm can also be defined as any function $f:{\rm I\!R^{n}} \mapsto {\rm I\!R}$ that satisfies 4 properties:
 \begin{itemize}
@@ -73,7 +73,7 @@ A \textbf{projection} is an inner product (dot product) of vectors. If $B$ is a 
 A matrix $\textbf{A} \in {\rm I\!R^{mxn}}$ is an array of numbers with size $m$ by $n$.
 $$ \textbf{A} = \begin{bmatrix}
     a_{11} & a_{12} & a_{13} & \cdots & a_{1n} \\
-    a_{21} & a_{22} & a_{23} & \cdots & a_{2n} \\ 
+    a_{21} & a_{22} & a_{23} & \cdots & a_{2n} \\
     \vdots & & & & \vdots \\
     a_{m1} & a_{m2} & a_{m3} & \cdots & a_{mn}
   \end{bmatrix}
@@ -81,15 +81,14 @@ $$
 \newline
 If $m=n$, we say that $\textbf{A}$ is square.
 \subsubsection{An Application of Matrices}
-Grayscale images have one number per pixel and are stored as an $mxn$ matrix. Color images have 3 numbers per pixel - red, green, and blue brightnesses (RGB), and are stored as an $mxnx3$ matrix.
-\section{Transformation Matrices}
-Matrices can be	used to transform vectors in useful ways, through multiplication: 
-x’= Ax. The simplest application of that is through scaling, or multiplying a scaling matrix with scalars on its diagonal by the vector. 
+Grayscale images have one number per pixel and are stored as an $m\times n$ matrix. Color images have 3 numbers per pixel - red, green, and blue \section{Transformation Matrices}
+Matrices can be	used to transform vectors in useful ways, through multiplication:
+$x’= Ax$. The simplest application of that is through scaling, or multiplying a scaling matrix with scalars on its diagonal by the vector.
 
-We can also use matrices to rotate vectors. When we multiply a matrix and a vector, the resulting x coordinate is the original vector \textbf{dot} the first row. 
+We can also use matrices to rotate vectors. When we multiply a matrix and a vector; the resulting $x$ coordinate is the original vector \textbf{dot} the first row.
 
 
-In order to rotate a vector by an angle $\theta$, counter-clockwise, we see that we need our 
+In order to rotate a vector by an angle $\theta$, counter-clockwise:
 
 $x'= cos\theta x -sin \theta y$ and
 
@@ -105,18 +104,18 @@ M=
   \end{bmatrix}
 \]
 
-which gives us that P' = R P. 
+which gives us that $P'= R P$.
 
-We can also use multiple matrices to transform a point. For example, $p' = R_2 R_1 S p$. The transformations are applied one after another, from right to left. In our example, this would be $(R_2(R_1(S p)))$. 
+We can also use multiple matrices to transform a point. For example, $p' = R_2 R_1 S p$. The transformations are applied one after another, from right to left. In our example, this would be $(R_2(R_1(S p)))$.
 
-In order to also be able to translate vectors, we have to implement a somewhat hacky solution of adding a "1" at the very end of the vector. That way, with these "homogeneous coordinates", we can also translate vectors. The multiplication works out so the rightmost column of our matrix gets added to the respective coordinates. A homogenous matrix will have [0 0 1] in the bottom row to ensure that the elements get added correctly, and the resulting vector has '1' at the bottom, too. 
+In order to translate vectors, we have to implement a somewhat hacky solution of adding a "1" at the very end of the vector. This way, using these "homogeneous coordinates", we can also translate vectors. The multiplication works out so the rightmost column of our matrix gets added to the respective coordinates. $A$ homogenous matrix will have [0 0 1] in the bottom row to ensure that the elements get added correctly, and the resulting vector has '1' at the bottom.
 
-By convention, in homogeneous coordinates, we divide the result by its last coordinate after doing matrix multiplication. 
+By convention, in homogeneous coordinates, we divide the result by its last coordinate after doing matrix multiplication.
 
 \[
   \begin{bmatrix}
     x \\
-    y \\ 
+    y \\
     7
   \end{bmatrix}
 \]
@@ -124,19 +123,19 @@ By convention, in homogeneous coordinates, we divide the result by its last coor
 \[
     \begin{bmatrix}
     x/7 \\
-    y/7 \\ 
+    y/7 \\
     1
   \end{bmatrix}
   \]
 
-So to obtain the result of 
+So to obtain the result of
 $P(x,y) -> P' = (s_x x, s_y y)$
 
 we have to first $P = (x, y) -> (x,y,1)$ and then $P' = (s_x x, s_y y) -> (s_x x, s_y y, 1)$ so we can then do the matrix multiplication S*P. Though, we have  to note that scaling and translating is not the same as translating and scaling. In other words, $T*S*P \neq S*T*P$
 
-Any rotation matrix R belongs to the cateogry of normal matrices that satisfies interesting properties. For example, $R \dot R^T = I$ and $det(R) = 1$
+Any rotation matrix R belongs to the category of normal matrices, and it satisfies interesting properties. For example, $R \dot R^T = I$ and $det(R) = 1$
 
-The rows of a rotation matrix are always mutually perpendicular (a.k.a. orthogonal) unit vectors - this is what allows for it to satisfy some of the few unique properties mentioned above. 
+The rows of a rotation matrix are always mutually perpendicular (a.k.a. orthogonal) unit vectors; this is what allows for it to satisfy some of the few unique properties mentioned above.
 
 \section{Matrix Inverse}
 Given a matrix $A$, its inverse $A^{-1}$ is a matrix such that:
@@ -147,16 +146,16 @@ An example of a matrix inverse is:
 $$
   \begin{bmatrix}
     2 & 0 \\
-    0 & 3 \\ 
+    0 & 3 \\
   \end{bmatrix}^{-1}
   =
   \begin{bmatrix}
     \frac{1}{2} & 0 \\
-    0 & \frac{1}{3} \\ 
+    0 & \frac{1}{3} \\
   \end{bmatrix}
 $$
 
-A matrix does not necessarily have an inverse. If $A^{-1}$ exists, A is known as \textit{invertible} or \textit{non-singular}. 
+A matrix does not necessarily have an inverse. If $A^{-1}$ exists, $A$ is known as \textit{invertible} or \textit{non-singular}.
 
 Some useful identities for matrices that are invertible are:
 \begin{itemize}
@@ -167,41 +166,41 @@ Some useful identities for matrices that are invertible are:
 
 \subsection{Pseudoinverse}
 
-Frequently in linear algebra problems, you want to solve the equation $AX=B$ for $X$. You would like to be able to compute $A^{-1}$ and multiply both sides to get $X=A^{-1}B$. In python, this command would be: np.linalg.inv(A)*B.
+Frequently in linear algebra problems, you want to solve the equation $AX=B$ for $X$. You would like to compute $A^{-1}$ and multiply both sides to get $X=A^{-1}B$. In python, this command would be: np.linalg.inv(A)*B.
 
-However, for large floating point matrices, calculating inverses can be very expensive and possibly inaccurate. An inverse could also not even exist for A. What should we do?
+However, for large floating point matrices, calculating inverses can be very expensive and possibly inaccurate. An inverse could also not even exist for $A$. What should we do?
 
-Luckily, we have what is known as a \textit{pseudoinverse}. This other matrix can be used to solve for AX=B. Python will try many methods, including using the pseudoinverse, if you use the following command: np.linalg.solve(A,B). Additionally, with the pseudoinverse, even if there is no solution to $AX=B$, Python can find the closest solution instead.
+Luckily, we have what is known as a \textit{pseudoinverse}. This other matrix can be used to solve for $AX=B$. Python will try many methods, including using the pseudo-inverse, if you use the following command: np.linalg.solve(A,B). Additionally, using the pseudo-inverse, Python finds the closest solution if there exists no solution to $AX=B$.
 
 \section{Matrix Rank}
 \begin{itemize}
-\item The rank of a transformation matrix  $A$ tells you how many dimensions it transforms a matrix to. 
+\item The rank of a transformation matrix  $A$ tells you how many dimensions it transforms a matrix to.
 
 \item col-rank($A$) = maximum number of linearly independent column vectors of $A$
 
 \item row-rank($A$) = maximum number of linearly independent row vectors of $A$.
-Column rank always equals row rank. 
+Column rank always equals row rank.
 
-\item For transformation matrices, the rank tells you the dimensions of the output. 
+\item For transformation matrices, the rank tells you the dimensions of the output.
 
 \item For instance, if rank of $A$ is $1$, then the transformation $p' =Ap$ points onto a line.
 
 \item Full rank matrix- if $mxm$ and rank is $m$
 
-\item Singular matrix- if $mxm$ matrix rank is less than $m$, because at least one dimension is getting collapsed. (No way to tell what input was from result) --> inverse does not exist for non-square matrices. 
+\item Singular matrix- if $mxm$ matrix rank is less than $m$, because at least one dimension is getting collapsed. (No way to tell what input was from result) --> inverse does not exist for non-square matrices.
 \end{itemize}
 
 \section{Eigenvalues and Eigenvectors (SVD)}
 
 \subsection{Definitions}
-An \textit{eigenvector} \textbf{x} of a linear transformation A is a non-zero vector that, when A is applied to it, does not change its direction.
-Applying A to the eigenvector scales the eigenvector by a scalar value $\lambda$, called an \textit{eigenvalue}.
+An \textit{eigenvector} \textbf{x} of a linear transformation $A$ is a non-zero vector that, when $A$ is applied to it, does not change its direction.
+Applying $A$ to the eigenvector scales the eigenvector by a scalar value $\lambda$, called an \textit{eigenvalue}.
 
 The following equation describes the relationship between eigenvalues and eigenvectors:
 $$A\mathbf{x}=\lambda \mathbf{x}, \quad \mathbf{x}\neq \mathbf{0}$$
 
 \subsection{Finding eigenvectors and eigenvalues}
-If we want to find the eigenvalues of A, we can manipulate the above definition as follows:
+If we want to find the eigenvalues of $A$, we can manipulate the above definition as follows:
 
 $$A\mathbf{x}=\lambda \mathbf{x}, \quad \mathbf{x}\neq \mathbf{0}$$
 $$A\mathbf{x}=(\lambda I \mathbf{x}), \quad \mathbf{x}\neq \mathbf{0}$$
@@ -227,12 +226,12 @@ $$|A|=\prod_{i=1}^{n} \lambda_i$$
 \subsubsection{Definitions}
 \begin{itemize}
 \item An \textit{eigenpair} is the pair of an eigenvalue and its associated eigenvector.
-\item An \textit{eigenspace} of A associated with $\lambda$ is the space of vectors where:
+\item An \textit{eigenspace} of $A$ associated with $\lambda$ is the space of vectors where:
 $$(A-\lambda I) = 0$$
-\item The \textit{spectrum} of A is the set of all its eigenvalues:
+\item The \textit{spectrum} of $A$ is the set of all its eigenvalues:
 $$\sigma(A)=\lbrace\lambda \in \mathbb{C}: \lambda I - A \textrm{ is singular}\rbrace$$
-Where $\mathbb{C}$ is the space of all eigenvalues of A
-\item The \textit{spectral radius} of A is the magnitude of its largest magnitude eigenvalue:
+Where $\mathbb{C}$ is the space of all eigenvalues of $A$
+\item The \textit{spectral radius} of $A$ is the magnitude of its largest magnitude eigenvalue:
 $$\rho(A)=max\lbrace |\lambda_1|, \ldots, |\lambda_n| \rbrace$$
 
 \end{itemize}
@@ -248,7 +247,7 @@ And we thus arrive at:
 $$\rho(A)=\lim_{k\to\infty} ||A^k||^{1/k}$$
 
 \subsection{Diagonalization}
-An nxn matrix A is diagonalizable if it has n linearly independent eigenvectors.
+An $n\times n$ matrix A is diagonalizable if it has $n$ linearly independent eigenvectors.
 
 Most square matrices are diagonalizable
 \begin{itemize}
@@ -257,12 +256,12 @@ Most square matrices are diagonalizable
 Note: Normal matrices are matrices that satisfy:
 $$A^* A=AA^*$$
 Where $A^*$ is the complex conjugate of $A$
-\item Matrices with n distinct eigenvalues are diagonalizable
+\item Matrices with $n$ distinct eigenvalues are diagonalizable
 \end{itemize}
 
 \textbf{Lemma:} Eigenvectors associated with distinct eigenvalues are linearly independent.
 
-To diagonalize the matrix A, consider its eigenvalues and eigenvectors. We can construct matrices D and V, where D is the diagonal matrix of the eigenvalues of A, and V is the matrix of corresponding eigenvectors:
+To diagonalize the matrix $A$, consider its eigenvalues and eigenvectors. We can construct matrices $D$ and $V$, where $D$ is the diagonal matrix of the eigenvalues of $A$, and $V$ is the matrix of corresponding eigenvectors:
 $$D=\begin{bmatrix}
     \lambda_1 & & \\
     & \ddots &    \\
@@ -277,12 +276,12 @@ $$
 
 Since we know that:
 $$AV=VD$$
-We can diagonalize A by:
+We can diagonalize $A$ by:
 $$A=VDV^{-1}$$
-If all eigenvalues are unique, then V is orthogonal. Since the inverse of an orthogonal matrix is its transpose, we can write the diagonalization as:
+If all eigenvalues are unique, then $V$ is orthogonal. Since the inverse of an orthogonal matrix is its transpose, we can write the diagonalization as:
 $$A=VDV^T$$
 \subsection{Symmetric Matrices}
-If A is symmetric, then all its eigenvalues are real, and its eigenvectors are orthonormal. Recalling the above diagonalization equation, we can diagonalize A by:
+If $A$ is symmetric, then all its eigenvalues are real, and its eigenvectors are orthonormal. Recalling the above diagonalization equation, we can diagonalize $A$ by:
 $$A=VDV^T$$
 
 Using the above relation, we can also write the following relationship:
@@ -293,10 +292,10 @@ $$x^TAx=x^TVDV^Tx=y^TDy=\sum_{i=1}^{n} \lambda_i y_i^2$$
 Thus, if we want to do the following maximization:
 $$ max_{x\in\mathbb{R}^n} (x^TAx) \quad \textrm{ subject to   } ||x||_2^2=1$$
 
-Then the maximizing x can be found by finding the eigenvector corresponding to the largest eigenvalue of A.
+Then the maximizing $x$ can be found by finding the eigenvector corresponding to the largest eigenvalue of $A$.
 
 \subsection{Applications}
-Some applications of eigenvalues and eigenvectors are:
+Some applications of eigenvalues and eigenvectors include, but are not limited to:
 \begin{itemize}
 \item PageRank
 \item Schroedinger's equation
@@ -304,7 +303,7 @@ Some applications of eigenvalues and eigenvectors are:
 \end{itemize}
 \section{Matrix Calculus}
 \subsection{The Gradient}
-If a function $f:{\rm I\!R^{mxn}} \mapsto {\rm I\!R}$ takes as input a matrix $A$ of size $mxn$ and returns a real value, then the gradient of $f$ is
+If a function $f:{\rm I\!R^{mxn}} \mapsto {\rm I\!R}$ takes as input a matrix $A$ of size $(m\times n)$ and returns a real value, then the gradient of $f$ is
 \newline
 $$\nabla_A f(A) \in {\rm I\!R^{mxn}} = \begin{bmatrix}
     \frac{\partial f(A)}{\partial A_{11}} & \frac{\partial f(A)}{\partial A_{12}} & \cdots & \frac{\partial f(A)}{\partial A_{1n}} \\
@@ -321,7 +320,7 @@ $$\nabla_x f(x) = \begin{bmatrix}
 	\frac{\partial f(x)}{\partial x_{1}} \\
     \frac{\partial f(x)}{\partial x_{2}} \\
     \vdots \\
-    \frac{\partial f(x)}{\partial x_{n}} 
+    \frac{\partial f(x)}{\partial x_{n}}
 \end{bmatrix}
 $$
 \subsection{The Gradient: Properties}

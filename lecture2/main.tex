@@ -42,21 +42,21 @@ Color is the result of interaction between physical light in the environment and
 White light is composed of almost equal energy in all wavelengths of the visible spectrum
 
 \subsection{Electromagnetic Spectrum}
-Light is made up of waves of different wavelengths.  The visual spectrum of light ranges from 400nm to 700nm, and humans are most sensitive to light with wavelengths in the middle of this spectrum.  The reason that humans see only visible light is that the Sun's temperature causes it to emit yellow light more than any other color.
+Light is made up of waves of different wavelengths.  The visual spectrum of light ranges from 400nm to 700nm, and humans are most sensitive to light with wavelengths in the middle of this spectrum.  Humans see only visible light because the Sun emits yellow light more than any other color and due to its temperature.
 
 \subsection{Visible light}
 Plank's Law for Blackbody radiation estimates the wavelengths of electromagnetic radiation emitted by a star, based on surface temperature.  For instance, since the surface of the sun is around 5800K, the peak of the sun's emitted light lies in the visible region.
 
 \subsection{The Physics of Light}
-Any source of light can be completely described physically by its spectrum, ie. the amount of energy emitted (per time unit) at each wavelength 400-700nm.  Surfaces have reflectance spectra: reflected light is focused on a certain side of the visible light spectrum, e.g. bananas reflect mostly yellow light, tomatoes reflect mostly red light.
+Any source of light can be completely described physically by its spectrum (i.e., the amount of energy emitted, per time unit, at each wavelength 400-700nm).  Surfaces have reflectance spectra: reflected light is focused on a certain side of the visible light spectrum. For example, bananas reflect mostly yellow light, and tomatoes reflect mostly red light.
 
 \subsection{Interaction of light and surfaces}
-Reflected color is the result of interaction of light source spectrum with surface reflectance.  As a rule, definitions and units are stated as "per unit wavelengths", and terms are assumed to be "spectral" (ie. referring to a spectrum of light, not a single wavelength).  Illumination is quantified as $Illumination .* Reflectance = Color Signal$ ~\cite{wandell1995foundations}
+Reflected color is the result of interaction of the light source spectrum with the surface reflectance.  As a rule, definitions and units are stated as "per unit wavelengths", and terms are assumed to be "spectral" (i.e., referring to a spectrum of light, not a single wavelength).  Illumination is quantified as $Illumination .* Reflectance = Color Signal$ ~\cite{wandell1995foundations}
 
 \section{Human Encoding of Color}
-As mentioned in the previous section, color is not a mere physical property of light - rather, the phenomenon of color arises via the interaction between light and the human visual system. 
+As mentioned in the previous section, color is not a mere physical property of light - rather, the phenomenon of color arises via the interaction between light and the human visual system.
 \subsection{Rods and Cones}
-When we look at a scene, light first enters our eyes through the pupil before reaching the retina. The retina is primarily composed of two types of light-sensitive cells: rods and cones, so named for their appearance under a microscope. \textbf{Rods} are the more numerous of the two and are highly sensitive, making them ideal for detecting objects in low-light conditions. However, they do not encode any color information. \textbf{Cones}, on the other hand are less numerous and less sensitive, but are useful for distinguishing between objects in high light conditions. They also allow us to perceive colors by a mechanism discussed below.
+When we look at a scene, light first enters our eyes through the pupil before reaching the retina. The retina is primarily composed of two types of light-sensitive cells: rods and cones, named for their appearance under a microscope. \textbf{Rods} are the more numerous of the two and are highly sensitive, making them ideal for detecting objects in low-light conditions. However, they do not encode any color information. \textbf{Cones}, on the other hand, are less numerous and less sensitive, but they are useful for distinguishing between objects in high light conditions. They also allow us to perceive colors by a mechanism discussed below.
 
 \subsection{Cones and Color}
 A crucial difference between rods and cones is that the latter comes in three different types, each characterized by a unique response curve to different wavelengths of light. Each response curve peaks at a unique wavelength, namely 440, 530, and 560nm, aligning with the colors of blue, green, and red. However, both cones and rods act as \textbf{filters}, the output of which can be interpreted as the multiplication of each response curve by the spectrum, integrated over all wavelengths. While the information encoded by the resulting three numbers is sufficient for most tasks, some information is lost in the compression from spectrum to electrical impulse in the retina. This implies that some subset(s) of spectra will be erroneously perceived as identical - such spectra are called \textbf{metamers}
@@ -66,18 +66,18 @@ Since we are interested in designing systems that provide a consistent visual ex
 
 
 \section{Color Spaces}
-\subsection{Definition} 
-Color space, also known as the color model (or color system), is an abstract mathematical model which simply describes the range of colors as tuples of numbers, typically as 3 or 4 values or color components (e.g. RGB). A color space may be arbitrary or structured mathematically. Most color models map to an absolute, globally understood system of color interpretation. 
+\subsection{Definition}
+Color space, also known as the color model (or color system), is an abstract mathematical model which describes the range of colors as tuples of numbers, typically as 3 or 4 values or color components (e.g. RGB). A color space may be arbitrary or structured mathematically. Most color models map to an absolute and globally understood system of color interpretation.
 
 \subsection{Linear Color Spaces}
 	Defined by a choice of three primaries, and the coordinates of the color are given by the weights of the primaries used to match it
-    
+
     \begin{figure}[h!]
     \centering
     \includegraphics[width=10cm]{color1.png}
     \caption{Mixing two lights produces colors that lie along a straight line in color space. Mixing three lights produces colors that lie within the triangle they define in color space.}
     \end{figure}
-    
+
     \begin{itemize}
     \item RGB Space
      \begin{itemize}
@@ -89,21 +89,21 @@ Color space, also known as the color model (or color system), is an abstract mat
       \includegraphics[width=10cm]{rgb1.png}
       \caption{Representation of RBG primaries and corresponding matching functions. The matching functions are the amounts of primaries needed to match the monochromatic test color at the wavelength shown on the horizontal scale. Source: \url{https://en.wikipedia.org/wiki/CIE_1931_color_space}}
       \end{figure}
-     
+
      \end{itemize}
-   
+
     \item CIE XYZ Color Space
      \begin{itemize}
-     \item Primaries are imaginary, but matching functions are everywhere positive 
+     \item Primaries are imaginary, but matching functions are everywhere positive
      \item The Y parameter corresponds to brightness or luminance of a color
      \item Related to RGB space by linear transformation, upholding Grassmann's Law
-     
+
 	  \begin{figure}[h!]
       \centering
       \includegraphics[width=10cm]{xyz1.png}
       \caption{Source: \url{https://en.wikipedia.org/wiki/CIE_1931_color_space}}
       \end{figure}
-     
+
      \end{itemize}
     \end{itemize}
 
@@ -112,9 +112,9 @@ Color space, also known as the color model (or color system), is an abstract mat
 	\item Designed to reflect more traditional and intuitive color mixing models (e.g. paint mixing)
     \item Based on how colors are organized and conceptualized in human vision
     \item Dimensions are: Hue, Saturation, and Value (Intensity)
-    
+
 \end{itemize}
-    
+
     \begin{figure}[h!]
     \centering
     \includegraphics[width=10cm]{hsv1.png}
@@ -144,10 +144,10 @@ Color space, also known as the color model (or color system), is an abstract mat
 \subsection{Von Kries Method}
 Von Kries' method for white balancing was to scale each channel by a "gain factor" to match the appearance of a gray neutral object.
 
-In practice, the best way to do this is the \textbf{Gray Card Method}: hold up a neutral (gray or white) and determine the values of each channel.  If we find that the card has RGB values $r_w,\ g_w,\ b_w$, then we scale each channel of the image by $\frac{1}{r_w},\ \frac{1}{g_w},\ \frac{1}{b_w}$.
+In practice, the best way to achieve this is the \textbf{Gray Card Method}: hold up a neutral (gray or white) and determine the values of each channel.  If we find that the card has RGB values $r_w,\ g_w,\ b_w$, then we scale each channel of the image by $\frac{1}{r_w},\ \frac{1}{g_w},\ \frac{1}{b_w}$.
 
 \subsection{Other Methods}
-Without Gray Cards, we need to guess which pixels correspond to white objects.  Several methods attempt to do this, including statistical and Machine Learning models (which are beyond the scope of this class)
+Without Gray Cards, we need to guess which pixels correspond to white objects.  Several methods attempt to achieve this, including statistical and Machine Learning models (which are beyond the scope of this class)
 
 \paragraph{Gray World Assumption} Under this model, we assume that the average pixel value in the photo ($r_{ave},\ g_{ave},\ b_{ave}$) is gray and scale the image pixels by $\frac{1}{r_{ave}},\ \frac{1}{g_{ave}},$ and $\frac{1}{b_{ave}}$
 
@@ -238,7 +238,7 @@ More formally, a norm is any function $f: \mathbf{R}^n \rightarrow \mathbf{R}$ t
   \item \textbf{Definiteness}: $f(x) = 0$ if and only if $x=0$
   \item \textbf{Homogeneity}: for all $x\in \mathbf{R}^n, t\in \mathbf{R}, f(tx) = \lvert t\rvert f(x)$
   \item \textbf{Triangle Inequality}: for all $x,y\in \mathbf{R}^n, f(x+y) \leq f(x) + f(y)$
-\end{enumerate}  
+\end{enumerate}
 Example Norms:
 \paragraph{One Norm} $\norm{x}_{1} = \sum\limits_{i=1}\limits^{n}{\lvert x_{i}\rvert}$
 \paragraph{Infinity Norm} $\norm{x}_{\inf} = \textnormal{max}_{i} \lvert x_{i}\rvert$
@@ -261,7 +261,7 @@ $x^Ty = x\cdot y = \begin{bmatrix} x_{1} & \dots & x_{n} \end{bmatrix} \begin{bm
     b_{1} & b_{2} &  \dots  & b_{p} \\
     \vertbar & \vertbar & \dots & \vertbar
 \end{bmatrix}
-= 
+=
 \begin{bmatrix}
     a_{1}^{T}b_{1} & a_{1}^{T}b_{2} & \dots  & a_{1}^{T}b_{p} \\
     a_{2}^{T}b_{1} & a_{2}^{T}b_{2} &  \dots  & a_{2}^{T}b_{p} \\
@@ -275,7 +275,7 @@ Matrix multiplication is
   \item \textbf{Associative}: $(AB)C = A(BC)$
   \item \textbf{Distributive}: $(A+B)C = AC + BC$
   \item \textbf{Not Commutative}: Generally $AB \neq BA$. For example, if $A\in \mathbb{R}^{mxn}, B \in \mathbb{R}^{nxq}$, the product $BA$ does not even exist if $m$ and $q$ are not equal!
-\end{enumerate} 
+\end{enumerate}
 
 \paragraph{Powers} By convention, we can refer to the matrix product $AA$ as $A^2$ and $AAA$ as $A^3$, etc. Obviously only square matrices can be multiplied that way.
 
@@ -323,22 +323,22 @@ For $\mathbf{A} = \begin{bmatrix}
 	\item Identity Matrix: a square matrix with 1's along the diagonal and 0's elsewhere. \textbf{I} * another matrix $=$ that matrix. Example identity matrix: $\begin{bmatrix}
     1 & 0 & 0 \\
     0 & 1 & 0 \\
-    0 & 0 & 1 
+    0 & 0 & 1
 \end{bmatrix}$
     \item Diagonal Matrix: a square matrix with numbers along the diagonal and 0's elsewhere. A diagonal * another matrix scales the rows of that matrix. Example diagonal matrix: $\begin{bmatrix}
     3 & 0 & 0 \\
     0 & 5 & 0 \\
-    0 & 0 & 2.5 
+    0 & 0 & 2.5
 \end{bmatrix}$
     \item Symmetric Matrix: $A^T = A$. Example: $\begin{bmatrix}
     1 & 2 & 5 \\
     2 & 1 & 7 \\
-    5 & 7 & 1 
+    5 & 7 & 1
 \end{bmatrix}$
     \item Skew-symmetric matrix:$A^T = -A$. Example: $\begin{bmatrix}
     0 & -2 & -5 \\
     2 & 0 & -7 \\
-    5 & 7 & 0 
+    5 & 7 & 0
 \end{bmatrix}$
 \end{itemize}
 
