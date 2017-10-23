@@ -81,11 +81,11 @@ $$
 \newline
 If $m=n$, we say that $\textbf{A}$ is square.
 \subsubsection{An Application of Matrices}
-Grayscale images have one number per pixel and are stored as an $mxn$ matrix. Color images have 3 numbers per pixel - red, green, and blue \section{Transformation Matrices}
+Grayscale images have one number per pixel and are stored as an $m\times n$ matrix. Color images have 3 numbers per pixel - red, green, and blue \section{Transformation Matrices}
 Matrices can be	used to transform vectors in useful ways, through multiplication:
-x’= Ax. The simplest application of that is through scaling, or multiplying a scaling matrix with scalars on its diagonal by the vector.
+$x’= Ax$. The simplest application of that is through scaling, or multiplying a scaling matrix with scalars on its diagonal by the vector.
 
-We can also use matrices to rotate vectors. When we multiply a matrix and a vector; the resulting x coordinate is the original vector \textbf{dot} the first row.
+We can also use matrices to rotate vectors. When we multiply a matrix and a vector; the resulting $x$ coordinate is the original vector \textbf{dot} the first row.
 
 
 In order to rotate a vector by an angle $\theta$, counter-clockwise:
@@ -108,7 +108,7 @@ which gives us that $P'= R P$.
 
 We can also use multiple matrices to transform a point. For example, $p' = R_2 R_1 S p$. The transformations are applied one after another, from right to left. In our example, this would be $(R_2(R_1(S p)))$.
 
-In order to translate vectors, we have to implement a somewhat hacky solution of adding a "1" at the very end of the vector. This way, using these "homogeneous coordinates", we can also translate vectors. The multiplication works out so the rightmost column of our matrix gets added to the respective coordinates. A homogenous matrix will have [0 0 1] in the bottom row to ensure that the elements get added correctly, and the resulting vector has '1' at the bottom.
+In order to translate vectors, we have to implement a somewhat hacky solution of adding a "1" at the very end of the vector. This way, using these "homogeneous coordinates", we can also translate vectors. The multiplication works out so the rightmost column of our matrix gets added to the respective coordinates. $A$ homogenous matrix will have [0 0 1] in the bottom row to ensure that the elements get added correctly, and the resulting vector has '1' at the bottom.
 
 By convention, in homogeneous coordinates, we divide the result by its last coordinate after doing matrix multiplication.
 
@@ -155,7 +155,7 @@ $$
   \end{bmatrix}
 $$
 
-A matrix does not necessarily have an inverse. If $A^{-1}$ exists, A is known as \textit{invertible} or \textit{non-singular}.
+A matrix does not necessarily have an inverse. If $A^{-1}$ exists, $A$ is known as \textit{invertible} or \textit{non-singular}.
 
 Some useful identities for matrices that are invertible are:
 \begin{itemize}
@@ -168,9 +168,9 @@ Some useful identities for matrices that are invertible are:
 
 Frequently in linear algebra problems, you want to solve the equation $AX=B$ for $X$. You would like to compute $A^{-1}$ and multiply both sides to get $X=A^{-1}B$. In python, this command would be: np.linalg.inv(A)*B.
 
-However, for large floating point matrices, calculating inverses can be very expensive and possibly inaccurate. An inverse could also not even exist for A. What should we do?
+However, for large floating point matrices, calculating inverses can be very expensive and possibly inaccurate. An inverse could also not even exist for $A$. What should we do?
 
-Luckily, we have what is known as a \textit{pseudoinverse}. This other matrix can be used to solve for AX=B. Python will try many methods, including using the pseudo-inverse, if you use the following command: np.linalg.solve(A,B). Additionally, using the pseudo-inverse, Python finds the closest solution if there exists no solution to $AX=B$.
+Luckily, we have what is known as a \textit{pseudoinverse}. This other matrix can be used to solve for $AX=B$. Python will try many methods, including using the pseudo-inverse, if you use the following command: np.linalg.solve(A,B). Additionally, using the pseudo-inverse, Python finds the closest solution if there exists no solution to $AX=B$.
 
 \section{Matrix Rank}
 \begin{itemize}
@@ -193,14 +193,14 @@ Column rank always equals row rank.
 \section{Eigenvalues and Eigenvectors (SVD)}
 
 \subsection{Definitions}
-An \textit{eigenvector} \textbf{x} of a linear transformation A is a non-zero vector that, when A is applied to it, does not change its direction.
-Applying A to the eigenvector scales the eigenvector by a scalar value $\lambda$, called an \textit{eigenvalue}.
+An \textit{eigenvector} \textbf{x} of a linear transformation $A$ is a non-zero vector that, when $A$ is applied to it, does not change its direction.
+Applying $A$ to the eigenvector scales the eigenvector by a scalar value $\lambda$, called an \textit{eigenvalue}.
 
 The following equation describes the relationship between eigenvalues and eigenvectors:
 $$A\mathbf{x}=\lambda \mathbf{x}, \quad \mathbf{x}\neq \mathbf{0}$$
 
 \subsection{Finding eigenvectors and eigenvalues}
-If we want to find the eigenvalues of A, we can manipulate the above definition as follows:
+If we want to find the eigenvalues of $A$, we can manipulate the above definition as follows:
 
 $$A\mathbf{x}=\lambda \mathbf{x}, \quad \mathbf{x}\neq \mathbf{0}$$
 $$A\mathbf{x}=(\lambda I \mathbf{x}), \quad \mathbf{x}\neq \mathbf{0}$$
@@ -226,12 +226,12 @@ $$|A|=\prod_{i=1}^{n} \lambda_i$$
 \subsubsection{Definitions}
 \begin{itemize}
 \item An \textit{eigenpair} is the pair of an eigenvalue and its associated eigenvector.
-\item An \textit{eigenspace} of A associated with $\lambda$ is the space of vectors where:
+\item An \textit{eigenspace} of $A$ associated with $\lambda$ is the space of vectors where:
 $$(A-\lambda I) = 0$$
-\item The \textit{spectrum} of A is the set of all its eigenvalues:
+\item The \textit{spectrum} of $A$ is the set of all its eigenvalues:
 $$\sigma(A)=\lbrace\lambda \in \mathbb{C}: \lambda I - A \textrm{ is singular}\rbrace$$
-Where $\mathbb{C}$ is the space of all eigenvalues of A
-\item The \textit{spectral radius} of A is the magnitude of its largest magnitude eigenvalue:
+Where $\mathbb{C}$ is the space of all eigenvalues of $A$
+\item The \textit{spectral radius} of $A$ is the magnitude of its largest magnitude eigenvalue:
 $$\rho(A)=max\lbrace |\lambda_1|, \ldots, |\lambda_n| \rbrace$$
 
 \end{itemize}
