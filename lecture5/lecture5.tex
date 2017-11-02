@@ -80,13 +80,31 @@ Correlation compares the similarity of two sets of data. Correlation computes a 
 Experiments done by Hubel and Wiesel recorded neuron responses in a cat, wanting to see what
 parts of its brain would respond to what stimuli. They found that the cat’s neurons were most excited by edges at different orientations; namely, certain neurons correlated to specific orientations of edges or edges that moved in specific directions. Having one of these edges moving in its field of vision would cause that particular neuron to fire excitedly.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=8cm]{hubel_wiesel_cat.jpg}
+\caption{Hubel and Wiesel's experiment. Source: Lecture 5, slide 34}
+\end{figure}
+
 \subsection{Biederman}
 Biederman was interested in experimenting with how quickly people can recognize the object that they're looking at. To test this, he drew outlines of common and recognizable objects and split them into two halves, with each line segment being divided into only one of the halves. He would then show people these outlines to test whether they could recognize the original objects while only seeing half of the original outline. \newline
 
 Surprisingly, he found no difference, in terms of speed, with which people could recognize these objects. It was quite easy for them to recognize an object via only parts of its edges. This is good for computer vision: even if only part of the original image is shown, a system theoretically should still be able to recognize the whole thing.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=8cm]{biederman_outlines.png}
+\caption{Examples of Biederman's outlines. Source: Lecture 5, slide 36}
+\end{figure}
+
 \subsection{Walther, Chai, Caddigan, Beck \& Fei-Fei}
 In similar experiments, another group of researchers took two variations of the same image - the original color image and the outline of that image - to test color image vs line image recognition in humans. They traced recognition through different layers, each one a different level of processing in the visual pcortex of the brain. They found that lower layers could recognize the scenes faster via the line image, but as it moved up the layers of the brain (which encode increasingly higher level concepts), the color drawings were much more helpful in allowing people to recognize the scene as compared to the line drawing. This is believed to have happened because lower layers are better at recognizing pieces, like edges, while higher layers are better at recognizing concepts (like "human," "chair," or "tiger").
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=8cm]{fei-fei_images.png}
+\caption{Visualization of the images and outcomes. Source: Lecture 5, Slide 37}
+\end{figure}
 
 
 \section{Edge Detection for Computer Vision}
@@ -138,6 +156,11 @@ Which is equivalent to an approximation of the gradient in the horizontal (n) di
 \subsection{Characterizing Edges}
 Characterizing edges - by which we mean being defining them properly so that they can be recognized - is an important first step in detecting edges. For our purposes, we will define an edge as a rapid place of change in the image intensity function. If we plot the intensity function along the horizontal scanline, then we will see that edges correspond to the extra of the derivative. Therefore, noticing sharp changes along this plot will likely give us edges.
 
+\begin{figure}[H]
+\centering
+\includegraphics[height=4cm]{lazebnik.png}
+\caption{Image with intensity function and first derivative. Source: Lecture 5, slide 66}
+\end{figure}
 
 \subsection{Image Gradient}
 The gradient of an image has been defined as the following:
@@ -146,17 +169,39 @@ while its direction has been defined as:
 $$\theta = \tan^{-1} \left( \frac{\partial f}{\partial y} / \frac{\partial f}{\partial x} \right).$$
 
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{seitz_gradient_direction.png}
+\caption{Gradient vector directions. Source: Lecture 5, slide 67}
+\end{figure}
+
 It is important to note that the direction in which the gradient vector points is the direction of the most rapid increase in intensity. That means that if you have a vertical edge, the most rapid change of intensity will be in the $x$-direction.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{lazebnik_tiger.png}
+\caption{Gradients as applied to the image of a tiger. Source: Lecture 5, slide 68}
+\end{figure}
 
 \subsection{Effects of Noise}
 
 If there's too much noise in an image, partial derivatives will have trouble identifying the edges of that image. \newline
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{seitz_noise.png}
+\caption{Derivative of an edge in a noisy image. Source: Lecture 5, slide 70}
+\end{figure}
 
 In order to account for noise within images, we must first smooth the image, which is a process in which we take pixels that are different from their neighbors and recalculate them so that they more closely resemble their neighbors. \newline
 
 There are, of course, some concerns to keep in mind when smoothing an image. Smoothed derivatives do remove noise, but can blur the edge you're looking for. Using too large of a filter when smoothing can get rid of actual edges and finer details in the image being smoothed.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{seitz_smoothing.png}
+\caption{Smoothing with different filters and filter sizes. Source: Lecture 5, slide 75}
+\end{figure}
 
 
 Smoothing will make the edge finding process easier. After smoothing your image $f$, search for peaks by calculating $f * \frac{d}{dx}g$ with kernel $g$.
@@ -187,6 +232,13 @@ An optimal edge detector must have certain qualities.
         \item It must minimize number of local maxima around the true edge (returning one point only for each true edge point). It should tell you that there is one very specific edge instead of splitting one edge into multiple detected edges. In other words, only the real border of the edge is captured; other possibilities are suppressed.
     \end{itemize}
 \end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=8cm]{fei-fei_detection.png}
+\caption{Sample problems of bad edge detectors. Source: Lecture 5, slide 84}
+\end{figure}
+
 
 % % References
 % \small
