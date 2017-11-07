@@ -33,7 +33,7 @@
 \maketitle
 
 \section{Introduction}
-The devices people use to view images or videos are of different sizes and shapes. The images or videos that are suitable on one device may look not good on other devices. For that reason, image resizing becomes an important problem. The intuitive idea is to rescale or crop the original image to fit the new device, but that often causes artifacts or even loss of important content in images. This lecture is about how to resize images to preserve important content and limit artifacts.
+The devices used for displaying images and videos are of different sizes and shapes. The optimal image/video viewing configuration, therefore, varies across devices and screen sizes. For this reason, image resizing is of great importance in computer vision. The intuitive idea is to rescale or crop the original image to fit the new device, but that often causes artifacts or even loss of important content in images. This lecture discussed the techniques used for resizing images while preserving important content and limiting the artifacts.
 \subsection{Problem Statement}
 Input an image of size $n\times m$ and return an image of desired size $n'\times m'$ which will be a good representative of original image. The expectations are:
 \begin{enumerate}
@@ -43,17 +43,17 @@ Input an image of size $n\times m$ and return an image of desired size $n'\times
 \end{enumerate}
 \subsection{Importance Measures}
 \begin{enumerate}
-\item A function, $S: p \rightarrow [0,1]$, is used to determine which parts in an image are important, then some operators can be used to help change the image. One idea is to use optimal cropping window to find out the most important contents, but this idea may cause loss of important contents.
+\item A function, $S: p \rightarrow [0,1]$, is used to determine which parts in an image are important; then, different operators can be used to resize the image. One solution is to use an optimal cropping window to extract the most important contents, but this may result in the loss of important contents.
 \begin{figure}[H]
 \centering
 \includegraphics[width=8cm]{Function.png}
 \caption{Importance Measurement by function method. Source: Lecture 7-11.}
 \end{figure}
-\item There are also more sophisticated measurements such as using attention models, eye tracking (gaze studies), face detectors, etc.
+\item There are also more sophisticated techniques for measuring the image regions with higher degree of important content; they include, but are not limited to, attention models, eye tracking (gaze studies), and face detectors.
 \begin{figure}[H]
 \centering
 \includegraphics[width=8cm]{Tracking.png}
-\caption{Importance Measurement by more sophisticated method. Source: Lecture 7-11, \textit{Judd et al. ICCV09 Learning to predict where people look.}}
+\caption{Importance Measurement by more sophisticated methods such as eye tracking. Source: Lecture 7-11, \cite{judd2009learning}}
 \end{figure}
 \end{enumerate}
 
@@ -114,7 +114,7 @@ The recursion relation gives
 \includegraphics[width=8cm]{findseam1.png}
 \caption{Using relation resursion to compute seam cost. Source: Lecture 7-(24-27)}
 \end{figure}
-\item To search for the optimal seam, backtracking method is introduced. Starting from the pixel at the bottom with the lowest energy function, then goes up until the top. 
+\item To search for the optimal seam, backtracking method is introduced. Starting from the pixel at the bottom with the lowest energy function, then goes up until the top.
 \end{enumerate}
 \begin{figure}[H]
 \centering
@@ -139,7 +139,7 @@ This algrithm runs $O((n-n')mn)$. In each loop, each update of $E$, $s$ and $im$
 \end{algorithm}
 
 
-Average energy of images will increase given that seam carving algorithm removes low energy pixels. With seam carving algorith, aspect ratio, removal of objects, resizing can be accomplished. Result is same if image is flipped. When resizing, we have to remove both horizontal and vertical seams. One can solve the order of adding and removing seams in both directions by dynamic programming. Specifically, the recurrence relation is: $T(r,c)=min(T(r-1,c)+E(s^x(I_{n-r-1\times m-c})),T(r,c-1)+E(s^y(I_{n-r\times m-c-1})))$ for more information refer to the SIGGRAPH paper on seam carving \cite{siggraphseamcarving}. 
+Average energy of images will increase given that seam carving algorithm removes low energy pixels. With seam carving algorith, aspect ratio, removal of objects, resizing can be accomplished. Result is same if image is flipped. When resizing, we have to remove both horizontal and vertical seams. One can solve the order of adding and removing seams in both directions by dynamic programming. Specifically, the recurrence relation is: $T(r,c)=min(T(r-1,c)+E(s^x(I_{n-r-1\times m-c})),T(r,c-1)+E(s^y(I_{n-r\times m-c-1})))$ for more information refer to the SIGGRAPH paper on seam carving \cite{siggraphseamcarving}.
 
 \begin{center}
 \includegraphics[width=8cm]{content_aware_resizing.png} \\
@@ -187,7 +187,7 @@ As we have seen, seam carving is an extremely capable method of effectively resi
 Figure 13: CS131 Lecture 7, slide 71
 \end{center}
 
-We can see that flat, smooth areas with low gradients that are important to the image, like the cheeks and forehead of the women, are being removed as the image is reduced. While they clearly have less energy as far as the algorithm is concerned, they are important features to human perception that should be preserved. To overcome issues like these, we can modify our energies to consider additional information. For example, we could use a face detector or apply user constraints like in the image below. 
+We can see that flat, smooth areas with low gradients that are important to the image, like the cheeks and forehead of the women, are being removed as the image is reduced. While they clearly have less energy as far as the algorithm is concerned, they are important features to human perception that should be preserved. To overcome issues like these, we can modify our energies to consider additional information. For example, we could use a face detector or apply user constraints like in the image below.
 
 \begin{center}
 \includegraphics[width=8cm]{user_constraints.PNG} \\
@@ -198,14 +198,14 @@ Figure 14: Seam Carving	for	Content-Aware Image	Resizing – Avidan and Shamir	2
 % ^.
 
 \subsection{Forward Energy}
-When we seam carve, we are removing the lowest energy pixels and preserving the highest energy pixels. As we do this, the average energy of the image is increased which can lead to artifacts and jagged edges. A way to avoid this issue is to instead focus on removing seams that insert the least energy to the image. In forward energy, our original accumulated cost matrix is modified with adding the forward energy from corresponding new neighbors as seen in the image below. Our previous method can be considered "backward" energy. 
+When we seam carve, we are removing the lowest energy pixels and preserving the highest energy pixels. As we do this, the average energy of the image is increased which can lead to artifacts and jagged edges. A way to avoid this issue is to instead focus on removing seams that insert the least energy to the image. In forward energy, our original accumulated cost matrix is modified with adding the forward energy from corresponding new neighbors as seen in the image below. Our previous method can be considered "backward" energy.
 
 \begin{center}
 \includegraphics[width=8cm]{forward_energy_calculation.JPG} \\
 Figure 15: Lecture 7-71
 \end{center}
 
-You can see the benefits of an approach such as this in the following image. With the traditional "backward" energy approach, jagged edges being to appear along the handle of the wrench and the stem of the plant. With the "forward" energy approach, as we are now minimizing added energy, the smoothness of edges is maintained. 
+You can see the benefits of an approach such as this in the following image. With the traditional "backward" energy approach, jagged edges being to appear along the handle of the wrench and the stem of the plant. With the "forward" energy approach, as we are now minimizing added energy, the smoothness of edges is maintained.
 
 \begin{center}
 \includegraphics[width=8cm]{forward_energy.PNG} \\
@@ -213,11 +213,11 @@ Figure 16: Seam	Carving	for	Content-Aware	Image	Resizing	– Avidan and	Shamir	2
 \end{center}
 
 \subsection{Seam-Carving in Videos}
-Since we've shown the powerful capabilities of seam carving, the next question is to consider applying this to video. However, while the seam-carving algorithms with a variety of tweaks can intelligently resize a single image well, it starts to encounter issues with resizing video. It turns out, video is a much more difficult problem. We face two primary issues. 
+Since we've shown the powerful capabilities of seam carving, the next question is to consider applying this to video. However, while the seam-carving algorithms with a variety of tweaks can intelligently resize a single image well, it starts to encounter issues with resizing video. It turns out, video is a much more difficult problem. We face two primary issues.
 
-First, let us consider a single minute of film at 30fps. In that minute, we have 1800 frames. If our seam carving algorithm takes a full minute to process an image, it would take us 30 hours to completely process the video. 
+First, let us consider a single minute of film at 30fps. In that minute, we have 1800 frames. If our seam carving algorithm takes a full minute to process an image, it would take us 30 hours to completely process the video.
 
-The second issue is with temporal coherency. One can consider the intuitive and naive approach of seam carving frame by frame. However, from frame to frame, there is important context which may not necessarily be preserved. Since the human eye is particularly sensitive to movement, this failure to consider context across images can create a poor looking video with clear distortion from frame to frame. There is no coherency to changes across frames. The less naive approach is to consider the video as a three dimensional space where each vertical plane is an image from the video. From there, you can find the lowest energy 2D seam throughout the whole video. This produces much better results but is still not quite perfect. 
+The second issue is with temporal coherency. One can consider the intuitive and naive approach of seam carving frame by frame. However, from frame to frame, there is important context which may not necessarily be preserved. Since the human eye is particularly sensitive to movement, this failure to consider context across images can create a poor looking video with clear distortion from frame to frame. There is no coherency to changes across frames. The less naive approach is to consider the video as a three dimensional space where each vertical plane is an image from the video. From there, you can find the lowest energy 2D seam throughout the whole video. This produces much better results but is still not quite perfect.
 \begin{center}
 \includegraphics[width=8cm]{video_retargeting.JPG} \\
 Figure 17: Improved Seam Carving for Video Retargeting, Rubinstein et al. 2008
@@ -227,7 +227,7 @@ This 3D representation gives us the same capabilities as 2D Seam-Carving such as
 % Lecture 12 - 1 to 20
 % Mason
 \section{Segmentation}
-Sometimes in computer vision we want to identify groups of pixels that go together. We call this image segmentation. Humans naturally perform image segmentation. For instance, two people looking at the same optical illusion might see different things, all depending on how their brain segments the images. For instance, in the image below, you might see zebras, or you might see a lion. 
+Sometimes in computer vision we want to identify groups of pixels that go together. We call this image segmentation. Humans naturally perform image segmentation. For instance, two people looking at the same optical illusion might see different things, all depending on how their brain segments the images. For instance, in the image below, you might see zebras, or you might see a lion.
 \begin{center}
 \includegraphics[width=8cm]{lion.jpg} \\
 Figure 18: https://www.weirdoptics.com/hidden-lion-visual-optical-illusion
@@ -247,7 +247,7 @@ We might also want to segment an image into many groups based off nearby pixels 
 Figure 20: X. Ren and J. Malik. Learning a classification model for segmentation. ICCV 2003.
 \end{center}
 
-Superpixel segmentation and other forms of segmentation can help in feature support. We can treat the groups of pixels as one feature and garner information about the image from them. 
+Superpixel segmentation and other forms of segmentation can help in feature support. We can treat the groups of pixels as one feature and garner information about the image from them.
 
 Segmentation is also beneficial for some common photo effects, such as background removal. If we can properly segment the image, we will be able to only keep the groups we want and remove the other groups.
 
@@ -263,14 +263,14 @@ Different clustering algorithms answer these questions differently, and those al
 
 In general, the two broad categories of clustering algorithms are top down and bottom up. Top down clustering groups pixels and patches together because they lie on the same visual entity. Bottom up clustering groups pixels together because they are locally coherent.
 
-We may also use certain visual patterns which humans recognize for our clustering algorithm. Some example patterns would be grouping similar objects together or using symmetry to aid in segmentation. In some instances, we can also look at "common fate." Common fate means that a group of objects appear to be moving together, so they share the same "fate." Here is an example of camels, which we can group by their common fate. 
+We may also use certain visual patterns which humans recognize for our clustering algorithm. Some example patterns would be grouping similar objects together or using symmetry to aid in segmentation. In some instances, we can also look at "common fate." Common fate means that a group of objects appear to be moving together, so they share the same "fate." Here is an example of camels, which we can group by their common fate.
 
 \begin{center}
 \includegraphics[width=8cm]{camels.png} \\
 Figure 21: Arthus-Bertrand (via F. Durand)
 \end{center}
 
-We can also illustrate common fate with this optical illusion. This illusion, called the Müller-Lyer illusion, tricks us into thinking the bottom line segment is longer than the top line segment, even though they are actually the same length (disregarding the four mini-tails). 
+We can also illustrate common fate with this optical illusion. This illusion, called the Müller-Lyer illusion, tricks us into thinking the bottom line segment is longer than the top line segment, even though they are actually the same length (disregarding the four mini-tails).
 
 \begin{center}
 \includegraphics[width=8cm]{muller.jpg} \\
@@ -288,4 +288,4 @@ Figure 23: Kristen Grauman
 \small
 \bibliographystyle{plain}
 \bibliography{bibliography}
-\end{document}
+\end{document} 
