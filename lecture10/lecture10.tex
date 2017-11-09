@@ -100,7 +100,7 @@ We approach the problem of determining similarity between objects as determining
 
 \subsubsection{Euclidean Distance}
 
-One common measure of distance is the Euclidean distance, which measures distances between two data points, $x$ and $x'$ by taking into account the angle and the magnitude. We can write the Euclidean distance as the following (which is equivalent to the dot product):
+One common measure of similarity is the Euclidean distance, which measures distances between two data points, $x$ and $x'$ by taking into account the angle and the magnitude. We can write the Euclidean distance as the following:
 
 \begin{equation}
 	sim(x, x') = x^T x'
@@ -108,9 +108,9 @@ One common measure of distance is the Euclidean distance, which measures distanc
 
 Note that this distance measure doesn't normalize the vectors, so the magnitude of the vectors is factored into the measure of similarity.
 
-\subsubsection{Cosine Distance Measure}
+\subsubsection{Cosine Similarity Measure}
 
-Another common measure of distance is the Cosine distance measure, which only accounts for the angle between two data points, $x$ and $x'$. As its name implies, this measure relies on the cosine between the two points, as found by:
+Another common measure of similarity is the Cosine similarity measure, which only accounts for the angle between two data points, $x$ and $x'$. Note that \textbf{unlike the Euclidean distance}, the cosine measure only represents \textit{similarity}, not \textit{distance}. This means that the similarity between a data point $x$, and itself, equals 1. As its name implies, this measure relies on the cosine between the two points, as found by:
 
 \begin{equation}
 	sim(x, x') = cos(\theta)
@@ -255,7 +255,7 @@ At the top left of figure 11, we have an image with three distinct color regions
 
 Using k-means, the objective here is to identify three cluster centers as the representative intensities, and label each pixel according to its closest center. The best cluster centers are those that minimize Sum of Square Distance between all points and their nearest cluster center $c_i$:
 \begin{equation}
-SSD = \sum_{cluster i}\sum_{x \in cluster i}(x-c_i)^2
+SSD = \sum_{i \in \textrm{clusters}}\sum_{x \in \textrm{cluster}_i}(x-c_i)^2
 \end{equation}
 
 When we are using k-means to summarize a dataset, the goal is to minimize the variance in the data points that are assigned to each cluster. We would like to preserve as much information as possible given a certain number of clusters. This is demonstrated by the equation below.
