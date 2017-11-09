@@ -75,8 +75,7 @@ The result of this process is a ranked list of "directions" in the feature space
         \item Compute the eigenvectors of $A^{T}A$. These vectors are columns of V (or rows of $V^{T}$)
     \end{itemize}
 \item Since SVD relies on eigenvector computation, which are typically fast, SVD can be performed quite quickly; even for large matrices.
-\item A more detailed, geometric explanation of SVD may be found 
-\href{http://www.ams.org/samplings/feature-column/fcarc-svd}{here}.
+\item A more detailed, geometric explanation of SVD may be found here\cite{ams}.
 \end{itemize}
 
 \subsection{Applications of Singular Value Decomposition}
@@ -98,7 +97,7 @@ Then, the resulting vector U$\Sigma$ gets scaled by row 1 of $V^T$ to produce a 
 
 In this process we are building the the matrix A as a linear combination of the columns of U. As seen above, if we use all columns of U, we rebuild A perfectly. However, in real-world data, \textbf{we can use only the first few columns of U} to get a good approximation of A. This arises due to the properties that $\Sigma$ has. $\Sigma$ is a diagonal matrix where the largest value is in the top left corner, and the rest of the values on the diagonal decreases as you move to the right. Thus, the first few columns of $U$ contribute the largest weight towards $A$. These first few columns of U are called \textbf{principal components}.\\
 
-However, not all matrices can be easily compressed as in the previous example. One way to figure out if it's worth performing is through Principal Component Analysis. From a high level standpoint, we want to see if there are certain 
+However, not all matrices can be easily compressed as in the previous example. One way to figure out if it's worth performing is through Principal Component Analysis. From a high level standpoint, we want to see if it's possible to remove dimensions that don't contribute much to the final image. We do this by analyzing the covariance matrix. Although the value of covariance doesn't matter as much, the sign of covariance does, with positive indicating positive correlation and negative indicating negative correlation. A covariance of zero indicates the two are independent of one another.
 
 \subsection{Performing Principal Component Analysis}
 Principal Component Analysis can be performed using the sklearn package:
@@ -135,7 +134,7 @@ With just the first 16 principal components, an image that closely resembles the
   \label{fig:sample_figure}
 \end{minipage}
 
-\item Web search engines also utilize PCA. There are billions of pages on the Internet that may have a non-trivial relation to a provided search phrase. Companies such as Google, Bing and Yahoo typically narrow the search space by only considering a small subset of this search matrix, which can be extracted using PCA (Abdulla \& Snasel, 2009). This is critical for timely, efficient searches and speaks to the power of SVD.
+\item Web search engines also utilize PCA. There are billions of pages on the Internet that may have a non-trivial relation to a provided search phrase. Companies such as Google, Bing and Yahoo typically narrow the search space by only considering a small subset of this search matrix, which can be extracted using PCA\cite{search-clustering}. This is critical for timely, efficient searches and speaks to the power of SVD.
 \end{itemize}
 
 In essence, PCA allows you to represent data samples as weights on various components - allowing one to essentially represent the difference between samples. This can significantly reduce data redundancy and can make algorithms used in a variety of industries more efficient and insightful!
@@ -144,110 +143,4 @@ In essence, PCA allows you to represent data samples as weights on various compo
 \small
 \bibliographystyle{plain}
 \bibliography{bibliography}
-
-% \section{References}
-% \begin{enumerate}
-% \item MacAusland, R. (2014). The Moore-Penrose Inverse and Least Squares. Tacoma, Washington: University of Puget Sound.
-% \item Abdulla H.D., Snasel V. (2009) Search Result Clustering using a Singular Value Decomposition (SVD) Proceedings of the First International Conference on Intelligent Human Computer Interaction. Springer, New Delhi
-% \end{enumerate}
-
-% Given a model with very high variance, how do you reduce variance
-% - variance is high when model complexity is high
-% - for example, increase the k for k-nearest neighbors to smooth out decision boundaries, thus simplifying model
-% - regularize your parameters
-% - get more training data to get more representation from the world
-
-% You should know your data (how much supervision, how noisy, how much you’re willing to pay for training data)
-% Know your goals
-% Basically, understand your model and what the algorithms and parameters mean
-
-% Give image features and training labels to algorithm to get a classifier
-% Run classifier on new images to get a prediction
-
-% Image Features
-% 1. Color
-%     1. Invariant w.r.t. translation or rotation
-%     2. Varying w.r.t. occlusion (hiding part of the image)
-%     3. Scaling is more complicated, since blowing things up might increase some colors
-% 2. Global Shape (PCA Space)
-%     1. invariant w.r.t. translation, rotation
-%     2. complicated with scale
-% 3. Local shape (shape context)
-%     1. invariant w.r.t. translation, scale
-%     2. complicated with rotation
-% 4. Texture
-%     1. invariant w.r.t translation
-
-% Singular Value Decomposition (SVD)
-% - “factorize” a matrix, representing it as the product of some other matrices
-% - total image size decreases, since M = N X O
-
-% 2X2, 2X2, 2X2
-% U(Sigma)V^{T} = A
-% - sigma as diagonal matrix with largest value in the top left corner
-% No gains here, but gains will come from larger matrix dimensions
-% U and V are rotation matrices
-% Sigma is a diagonal matrix
-% Column 1 of U gets scaled by the first value from Sigma
-% So the first column of U(Sigma) and first row in V^{T} gives the most information because the top-left value of Sigma is the largest
-% Building A as linear combination of the columns of U
-% The first few columns of U are the Principal Components of the data
-
-% If A is symmetric, then you can break it down to Phi Sigma Phi^{T}
-
-% Suppose given square matrix A. Can solve for vector x and scalar lambda s.t. A x = lambda x
-% Finding eigenvectors:
-% x = some random unit vector
-% while(x hasn’t converged): 
-% 	x = Ax
-% 	normalize x
-% Eigenvectors are for square matrices, but SVD is for all matrices
-% Take eigenvectors of AA^{T} (matrix is always square)
-% 	1. These eigenvectors are the columns of U
-% 	2. Square root of eigenvalues are the singular values (entries of Sigma)
-% Take eigenvectors of A^{T}A (matrix is always square)
-% 	1. These eigenvectors are columns of V (or rows of V^{T})
-% SVD is fast, even for large matrices
-
-% SVD just shows that this can be done. Principal Component Analysis (PCA) is how decomposition is done
-
-% PCA
-% covariance as a measure of how much each of the dimensions vary from the mean with respect to each other
-% covariance(X,Y) = \sum\limits_{i=1}^{n}\frac{(X_{i}-X_{bar})((Y_{i}-Y_{bar})}{n - 1}
-% What is the interpretation of covariance?
-% - No good interpretation. The only good interpretation is from their sign
-% - positive meaning positive correlation, same with negative
-% - Covariance of 0 means that the two dimensions are independent of each other
-% Trying to maximize covariance
-% 1. Project set of 2D data points x onto a 1D line
-% X is a Gaussian that has some mean vector (same dimensions as X), covariance matrix Sigma
-% Since Gaussians are symmetric, its covariance is also symmetric.
-% Sigma = U Delta^{1/2}(U Delta^{1/2})^{T}
-% Can represent original data as X ~ mu + U N(0, Delta)
-% Principal components of Sigma are the eigenvectors
-% Principal lengths of Sigma are the eigenvalues
-% - Not flat if sigma_{1} \approx sigma_{2} -> don’t compress data
-% - flat if sigma_{1} >> sigma_{2} -> can represent as fewer dimensions so compress
-% PCA Algorithm
-% 	1. Find mean along dimension
-% 	2. Find covariance matrix
-% 	3. Compute eigenvalues and eigenvectors of covariance matrix
-% 	4. Order eigenvalues
-% Given new image
-% 1. Subtract mean from each point to get t’
-% 2. Project onto eigenvector space where y=At’, where A is the principal components that you keep
-% 3. use T’ = {y_{1}…y_{n}} to test
-
-% PCA by SVD
-% 1. Take all data points to get A, find SVD decomposition M Pi N^{T} where M is a column orthonormal matrix of left singular vectors and N_{T} is a row orthonormal matrix
-%     1. MM^{T} = NN^{T} = I
-% 2. Compute sample mean
-% 3. Center the data by subtracting the mean from each column of X to get X_{c}
-% 4. Get sample covariance matrix
-% 5. Do SVD of Sigma to get 1/n N Pi^{2} N^{T}
-%     1. N is orthonormal and Pi is diagonal 
-
-% Image Compression
-% Take patches (nxn) pixels on a grid, view each as n^{2} dimensional vector
-% Perform PCA
 \end{document}
