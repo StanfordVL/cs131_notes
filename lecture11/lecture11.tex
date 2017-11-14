@@ -31,30 +31,28 @@
 \subsection{Optimizations}
 
 A window must be initialized at each point and shifted to the most dense area in order to correctly assign it to a cluster. This procedure can result in a large number of redundant or very similar computations. It is possible to improve the speed of the algorithm by computing window shifts in parallel or by reducing the number of windows that must be shifted over the data using a method called "basin of attraction".
-\begin{itemize}
-	\item Parallelization
-    \begin{itemize}
-    	\item The computations required to shift different windows are independent of each other and can be split across multiple processors and computed simultaneously. By parallelizing mean-shift over multiple processors or machines it is possible to achieve a large speed increase without any loss to accuracy.
-    \end{itemize}
-	\item Basin of Attraction
-    \begin{itemize}
-    	\item It is very likely that points close to the path and stopping points of the window will end up in the same cluster. Because of this, it is possible to save time by assigning those points early instead of waiting to calculate mean-shift using a window initialized at their location.
-    	\item Assign nearby points using the following methods after each update to the window location:
-        \begin{itemize}
-        	\item Assign all points within a radius $r$ of the shift end point to the same cluster. The idea with this step is that the window has just been shifted to an area of higher density, thus it is likely that points close to this area will all be in the same cluster
+
+\paragraph{Parallelization}
+The computations required to shift different windows are independent of each other and can be split across multiple processors and computed simultaneously. By parallelizing mean-shift over multiple processors or machines it is possible to achieve a large speed increase without any loss to accuracy.
+
+\paragraph{Basin of Attraction}
+It is very likely that points close to the path and stopping points of the window will end up in the same cluster. Because of this, it is possible to save time by assigning those points early instead of waiting to calculate mean-shift using a window initialized at their location. \\
+Assign nearby points using the following methods after each update to the window location: \\
+Assign all points within a radius $r$ of the shift end point to the same cluster. The idea with this step is that the window has just been shifted to an area of higher density, thus it is likely that points close to this area will all be in the same cluster
+
 \begin{center}
 	\includegraphics[scale=0.5]{basin1.png}\\
     \textbf{Figure 1:} Adding points within radius $r$ of shift end point\\
 \end{center}
-			\item Assign all points within radius $c$ of the path of the shift to the same cluster. Imagine initializing a window at one of the points near the path of the shift. Because all windows are shifted in the direction of the most dense area, it is likely that this window will be shifted in the same direction and the point will eventually be assigned to the same cluster. It is common to select the radius $c$ such that $c\le r$.
+
+Assign all points within radius $c$ of the path of the shift to the same cluster. Imagine initializing a window at one of the points near the path of the shift. Because all windows are shifted in the direction of the most dense area, it is likely that this window will be shifted in the same direction and the point will eventually be assigned to the same cluster. It is common to select the radius $c$ such that $c\le r$.
+
 \begin{center}
 	\includegraphics[scale=0.5]{basin2.png}\\
     \textbf{Figure 2:} Adding points within radius $c$ of window path\\
 \end{center}
-        \end{itemize}
-    	\item There is a trade off in selecting the values for $r$ and $c$. The smaller the values, the less nearby points are assigned early and the less computations are saved, but the resulting cluster assignments will have less error if mean-shift was calculated without this method. The larger the values, the more nearby points are assigned resulting in faster speed increases, but also the possibility that the final cluster assignments will be less accurate to standard mean-shift.
-    \end{itemize}
-\end{itemize}
+
+There is a trade off in selecting the values for $r$ and $c$. The smaller the values, the less nearby points are assigned early and the less computations are saved, but the resulting cluster assignments will have less error if mean-shift was calculated without this method. The larger the values, the more nearby points are assigned resulting in faster speed increases, but also the possibility that the final cluster assignments will be less accurate to standard mean-shift.
 
 \subsection{Technical Details}
 
@@ -224,12 +222,7 @@ We can enhance the nearest neighbors classifier by looking at the k nearest neig
 Like the nearest neighbor classifier, the k-nearest neighbor algorithm allows for complex decision boundaries using a relatively simple equation!
 
 \subsection{Pros of using k-nearest neighbors}
-
-\begin{itemize}
-    \item K-NN is a very simple algorithm-- a good one to try out at first
-    \item K-NN has very flexible decision boundaries.
-    \item (Out of scope for this class) With infinite examples, 1-NN provably has error that is at most twice Bayes optimal error.
-\end{itemize}
+K-NN is a very simple algorithm, which makes it a good one to try out at first. IN addition, K-NN has very flexible decision boundaries. Another reason to use K-NN is that with infinite examples, 1-NN provably has error that is at most twice Bayes optimal error (proof is out of scope for this class).
 
 \subsection{Problems with k-nearest neighbors}
 
