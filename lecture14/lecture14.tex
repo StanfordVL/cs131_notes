@@ -19,7 +19,7 @@
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{\{meghas, jtaylor5, shubhang, samprem,etc.\}@cs.stanford.edu} \\
+  \texttt{\{meghas, jtaylor5, shubhang, samprem, zwang141\}@cs.stanford.edu} \\
 }
 
 \begin{document}
@@ -110,7 +110,7 @@ A pyramid is built by using multiple copies	of the source image. Each level in t
 \includegraphics[width=8cm,height=6.4cm]{pyramid.PNG}
 \end{center}
 \subsection{Bag of Words + Pyramids}
-Bag of Words alone doesn't discriminate if a patch was obtained from the top, middle or bottom of the image because it doesn't save any spatial information. Spatial pyramid matching partitions the image into increasingly fine sub-regions and allows us to computes histograms (BoW) of local features inside each sub-region.\\
+Bag of Words alone doesn't discriminate if a patch was obtained from the top, middle or bottom of the image because it doesn't save any spatial information. Spatial pyramid matching partitions the image into increasingly fine sub-regions and allows us to computes histograms (BoW) of local features inside each sub-region. \cite{quora}\\
 If the BoWs of the upper part of the image contain "sky visual words", the BoWs in the middle "vegetation and mountains visual words" and the BoWs at the bottom "mountains visual words", then it is very likely that the image scene category is "mountains".
 \begin{center}
 \includegraphics[width=10cm,height=6.4cm]{BoW_pyramid.PNG}
