@@ -33,23 +33,23 @@
 
 \section{Overview and Motivation}
 \subsection{Overview}
-Dimensionality reduction is a process for reducing the number of features to be used in an analysis or model. There are several methods commonly used in dimensionality reduction. The two main methods covered this lecture are Singular Value Decomposition (SVD) and Principal Component Analysis (PCA). 
+Dimensionality reduction is a process for reducing the number of features used in an analysis or a prediction model. This enhances the performance of computer vision and machine learning-based approaches and enables us to represent the data in a more efficient way. There are several methods commonly used in dimensionality reduction. The two main methods covered in this lecture are Singular Value Decomposition (SVD) and Principal Component Analysis (PCA). 
 
 \subsection{Motivation}
-There are several reasons why reducing the dimensions for a model is useful.\\
+Dimension reduction benefits models for a number of reasons.\\
 \begin{enumerate}
-\item Reduction in computational cost can be achieved. In many data sets, most of the variance can be explained by a relatively small number of principal components, when compared to the dimensionality of the entire feature set. By reducing our dimensions to focus on these key components, we can shrink the computational cost of analyzing each data point without losing much granularity in the data.
+\item Reduction in computational cost can be achieved. In many data sets, most of the variance can be explained by a relatively small number of input variables and their linear combinations. Focusing on these key components using dimensionality reduction, we can reduce the computational cost without losing much granularity in the data.
 
-\item Reduce the effects of the “curse of dimensionality”. In lecture 11 we learned that as we increase the dimension of a feature space, the number of data points needed to “fill in” that space with the same density explodes exponentially. That is to say, the more dimensions there are, the more examples a machine learning algorithm needs to learn from and the longer the algorithm must run to analyze the same number of data points. By performing dimensionality reduction, we can mitigate the effects of this “curse of dimensionality”.
+\item Reduce the effects of the “curse of dimensionality”. In lecture 11 we learned that as we increase the dimension of a feature space, the number of data points needed to “fill in” that space with the same density explodes exponentially. That is to say, the more dimensions used in a machine learning algorithm, the more examples are needed for learning and the longer it takes the algorithm to analyze the same number of data points. By performing dimensionality reduction, we can mitigate the effects of this “curse of dimensionality”.
 
-\item Compress data. By shrinking the dimensionality of an image, we can dramatically reduce the amount of storage required to store the image. 
+\item Compress data. By reducing the dimensionality of an image, we can dramatically reduce the data storage requirements. 
 
 In such cases the computational cost per data point may be reduced by many orders of magnitude with a procedure like SVD 
 \end{enumerate}
 
 \section{Singular Value Decomposition}
 \subsection{Overview}
-Intuitively, Singular Value Decomposition (SVD) is a procedure that allows one to (in a sense) "rotate the axes" of the feature space in which a dataset has been plotted so that instead of the different axes corresponding to specific features (e.g. age, income, gender, etc. of a customer) the new axes point in directions that track linear combinations of the original feature space.  These “new axes” are useful because they systematically break down the variance in the data points (how widely the data points are distributed) based on each directions contribution to the variance in the data:
+Intuitively, Singular Value Decomposition (SVD) is a procedure that allows one to represent the data in a new sub-feature space, such that the majority of variations in the data is captured; this is achieved by "rotating the axes" of the original feature space to form new axes which are linear combinations of the original axes/features (e.g. age, income, gender, etc. of a customer). These “new axes” are useful because they systematically break down the variance in the data points (how widely the data points are distributed) based on each directions contribution to the variance in the data:
 
 % \begin{figure}[h!]
 %   \caption{}
@@ -63,7 +63,7 @@ Intuitively, Singular Value Decomposition (SVD) is a procedure that allows one t
 % 
 % ^.
 
-The result of this process is a ranked list of "directions" in the feature space ordered from most variance to least.  The directions along which there is greatest variance are referred to as the "principal components" (of variation in the data) and the common wisdom is that by focusing on the way the data is distributed along these dimensions exclusively, one can capture most of the information represented in in the original feature space without having to deal with such a high number of dimensions (but see below on the difference between feature selection and dimensionality reduction).
+The result of this process is a ranked list of "directions" in the feature space ordered from most variance to least.  The directions along which there is greatest variance are referred to as the "principal components" (of variation in the data); by focusing on the data distribution along these dimensions, one can capture most of the information represented in the original feature space without having to deal with a high number of dimensions in the original space (but see below on the difference between feature selection and dimensionality reduction).
 
 \subsection{Technical Details of Singular Value Decomposition}
 \begin{itemize}
@@ -95,9 +95,9 @@ Then, the resulting vector U$\Sigma$ gets scaled by row 1 of $V^T$ to produce a 
 
 \includegraphics[scale = 0.5]{full_pca}
 
-In this process we are building the the matrix A as a linear combination of the columns of U. As seen above, if we use all columns of U, we rebuild A perfectly. However, in real-world data, \textbf{we can use only the first few columns of U} to get a good approximation of A. This arises due to the properties that $\Sigma$ has. $\Sigma$ is a diagonal matrix where the largest value is in the top left corner, and the rest of the values on the diagonal decreases as you move to the right. Thus, the first few columns of $U$ contribute the largest weight towards $A$. These first few columns of U are called \textbf{principal components}.\\
+In this process we are building the the matrix A as a linear combination of the columns of U. As seen above, if we use all columns of U, we rebuild A perfectly. However, in real-world data, \textbf{we can use only the first few columns of U} to get a good approximation of A. This arises due to the properties of $\Sigma$. $\Sigma$ is a diagonal matrix where the largest value is in the top left corner, and the rest of the values on the diagonal decreases as you move to the right. Thus, the first few columns of $U$ contribute the largest weight towards $A$. These first few columns of U are called \textbf{principal components}.\\
 
-However, not all matrices can be easily compressed as in the previous example. One way to figure out if it's worth performing is through Principal Component Analysis. From a high level standpoint, we want to see if it's possible to remove dimensions that don't contribute much to the final image. We do this by analyzing the covariance matrix. Although the value of covariance doesn't matter as much, the sign of covariance does, with positive indicating positive correlation and negative indicating negative correlation. A covariance of zero indicates the two are independent of one another.
+However, not all matrices can be easily compressed as in the previous example. One way to evaluate the feasibility is Principal Component Analysis. From a high level standpoint, we want to see if it's possible to remove dimensions that don't contribute much to the final image. We achieve this by analyzing the covariance matrix. Although the value of covariance doesn't matter as much, the sign of covariance does, with positive indicating positive correlation and negative indicating negative correlation. A covariance of zero indicates the two are independent of one another.
 
 \subsection{Performing Principal Component Analysis}
 Principal Component Analysis can be performed using the sklearn package:
@@ -134,10 +134,10 @@ With just the first 16 principal components, an image that closely resembles the
   \label{fig:sample_figure}
 \end{minipage}
 
-\item Web search engines also utilize PCA. There are billions of pages on the Internet that may have a non-trivial relation to a provided search phrase. Companies such as Google, Bing and Yahoo typically narrow the search space by only considering a small subset of this search matrix, which can be extracted using PCA\cite{search-clustering}. This is critical for timely, efficient searches and speaks to the power of SVD.
+\item Web search engines also utilize PCA. There are billions of pages on the Internet that may have a non-trivial relation to a provided search phrase. Companies such as Google, Bing and Yahoo typically narrow the search space by only considering a small subset of this search matrix, which can be extracted using PCA\cite{search-clustering}. This is critical for timely and efficient searches, and it speaks to the power of SVD.
 \end{itemize}
 
-In essence, PCA allows you to represent data samples as weights on various components - allowing one to essentially represent the difference between samples. This can significantly reduce data redundancy and can make algorithms used in a variety of industries more efficient and insightful!
+In essence, PCA represents data samples as weights on various components - allowing one to essentially represent the difference between samples. This can significantly reduce data redundancy and can make algorithms used in a variety of industries more efficient and insightful!
 
 % References
 \small
