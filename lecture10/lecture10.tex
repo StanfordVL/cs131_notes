@@ -33,7 +33,7 @@
 \maketitle
 
 \section{Clustering and Segmentation}
-One task in computer vision is image segmentation. The goal of image segmentation is to identify groups of pixels that go together. Pixels can be similar to each other in some aspect, whether it be texture, color, or some other feature. An example of image segmentation is pictured below. In figure 1, we'd like to be able to group all the pixels that make up the tiger, all the pixels that make up the grass, all the pixels that make up the sky, and all the pixels that make up the sand. We can see the resulting segmentation in figure 2.
+Image segmentation is a task in computer vision; it aims to identify groups of pixels and image regions that are similar and belong together. Different similarity measures can be used for grouping pixels; this includes texture and color features. An instance of image segmentation is illustrated below. In Figure 1, the objective is to group all the pixels that make up the tiger, the grass, the sky, and the sand. The resulting segmentation can be observed in Figure 2.
 
 \begin{figure}[!htb]
    \begin{minipage}{0.48\textwidth}
@@ -48,69 +48,70 @@ One task in computer vision is image segmentation. The goal of image segmentatio
    \end{minipage}
 \end{figure}
 
-This is one example of image segmentation. Other examples include grouping video frames into shots and determining what is a figure and what is the ground/background. By identifying groups of pixels that go together, we can separate an image into distinct objects. Beyond the immediate usefulness of recognizing objects, this can also allow for greater efficiency in any further processing we do.
+Other examples of image segmentation include grouping video frames into shots and separating an image's foreground and background. By identifying the groups of pixels that belong together, an image can be broken down into distinct objects. In addition to its immediate use for object recognition, this can also allow for greater efficiency in any further processing.
 
 
 \section{Gestalt School and Factors}
-A lot of computer vision algorithms draw from areas outside of computer science, and image segmentation is no different. Computer vision researchers drew inspiration from the field of psychology, specifically the Gestalt Theory of Visual Perception. At a very high level, this theory states that "the whole is greater than the sum of its parts." The relationships between parts can yield new properties and features. In the theory, there are Gestalt factors. These factors are properties that can define groups. Below are examples of factors.
+Many computer vision algorithms draw from the areas outside of computer science, and image segmentation is no different. Computer vision researchers drew inspiration from the field of psychology, specifically the Gestalt Theory of Visual Perception. At a very high level, this theory states that "the whole is greater than the sum of its parts." The relationships between parts can yield new properties and features. This theory defines Gestalt factors, properties that can define groups in images. Below are examples of such factors.
 
 \begin{center}
 \includegraphics[width=0.8\textwidth]{gestalt-factors.png}
 \captionof{figure}{Examples of gestalt factors. Source: Forsyth \& Ponce \cite{forsyth2011computer}}
 \end{center}
 
-There are a few other factors that cannot be explained with just a picture. Take a look at the following image:
+Here is an example of an other factor; while Figure 4 does not appear to have meaningful visual content, the addition of the overlaying gray lines  (Figure 5) on the same image provides visual cues as to the pixel groupings and image content.
 
-\begin{center}
-\centering
-\includegraphics[width=0.5\textwidth]{continuity-occlusion.png}
-\captionof{figure}{Source: Forsyth \& Ponce \cite{forsyth2011computer}}
-\end{center}
+\begin{figure}[!htb]
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{continuity-occlusion.png}
+		\caption{Source: Forsyth \& Ponce \cite{forsyth2011computer}}
+	\end{minipage}\hfill
+	\begin {minipage}{0.48\textwidth}
+	\centering
+	\includegraphics[width=.7\linewidth]{continuity-occlusion-2.png}
+	\caption{Source: Forsyth \& Ponce \cite{forsyth2011computer}}
+\end{minipage}
+\end{figure}
 
-Can you make out anything in this picture? Probably not. But how about now:
 
-\begin{center}
-\includegraphics[width=0.5\textwidth]{continuity-occlusion-2.png}
-\captionof{figure}{Source: Forsyth \& Ponce \cite{forsyth2011computer}}
-\end{center}
+We can now more clearly see that the image is a few 9's occluded by the gray lines. This is an example of a continuity through occlusion cue. The gray lines give us a cue that the black pixels are not separate and should in fact be grouped together. By grouping the black pixels together and not perceiving them as separate objects, our brain is able to recognize that this picture contains a few digits.
 
-Now, we can clearly see the image is a bunch of 9's occluded by random squiggly lines. This is an example of a continuity through occlusion cue. The grey squiggly lines give us a cue that the black pixels are not separate and should in fact be grouped together. And by grouping the black pixels together and not perceiving them as separate objects, our brain is able to recognize that this picture is a bunch of 9's being occluded by grey lines.
-
-Here's another image:
+Below is another example:
 \begin{center}
 \includegraphics[width=0.5\textwidth]{figure-ground.png}
 \captionof{figure}{Source: Forsyth \& Ponce \cite{forsyth2011computer}}
 \end{center}
 
-What do you see? Do you see a cup or do you see the side of 2 heads facing each other? Either option is correct, depending on your perspective. This variation in perception is due to what we identify as the foreground and what we identify as the background. If we identify the black pixels as the foreground, we see a cup. But if we identify the white pixels as the foreground, we see 2 faces.
+What do you see? Do you see a cup or do you see the side of 2 heads facing each other? Either option is correct, depending on your perspective. This variation in perception is due to what we identify as the foreground and the background. If we identify the black pixels as the foreground, we see a cup. But, if we identify the white pixels as the foreground, we see 2 faces.
 
-This is an overview of some of the factors we draw inspiration from for grouping. One thing to note however is that while these factors make intuitive sense, it's very hard to translate these factors into working algorithms.
+This is an overview of some of the factors that affect human's perception of pixel/image region grouping within visual data. One thing to note, however, is that while these factors may be intuitive, it's hard to translate these factors into working algorithms.
 
-So now the question is, how do we perform image segmentation? What algorithms do we use? One way to think about segmentation is clustering. We have a bunch of pixels and we want to assign each of them to a cluster. In the following sections, we will explore different methods of clustering.
+How do we perform image segmentation? What algorithms do we use? One way to think about segmentation is clustering. We have a few pixels and we want to assign each to a cluster. In the following sections, different methods of clustering will be detailed.
 
 \section{Agglomerative Clustering}
 
-In general, clustering is an unsupervised learning technique where we have several items, $x_1, ..., x_n$, each of which are in $R^D$, and we are attempting to group them into clusters, without knowing what the correct answer is. Within clustering there are several kinds of algorithms that are commonly used. Out of these, one of the more common ones is called \textbf{agglomerative clustering}. 
+Clustering is an unsupervised learning technique where several data points, $x_1, ..., x_n$, each of which are in $R^D$, are grouped together into clusters without knowing the correct label/cluster. \textbf{Agglomerative clustering} is one of the commonly used techniques for clustering.
 
 The general idea behind agglomerative clustering is to look at similarities between points to decide how these points should be grouped in a sensible manner. Before we discuss the details of the algorithm, we must first decide how we determine similarity.
 
 \subsection{Distance Measures}
 
-We approach the problem of determining similarity between objects as determining the distance between the objects: the smaller the distance, the more similar they are. Although there are several potential distance functions we can work with, in general, it's hard to know what makes a good distance metric, so people try to choose a standard, well-researched distance metric, such as the two examples below.
+We measure the similarity between objects by determining the distance between them: the smaller the distance, the higher the degree of similarity. There are several possible distance functions, but it is hard to determine what makes a good distance metric, so usually the focus is placed on standard, well-researched distance metrics such as the two detailed below.
 
 \subsubsection{Euclidean Distance}
 
-One common measure of similarity is the Euclidean distance, which measures distances between two data points, $x$ and $x'$ by taking into account the angle and the magnitude. We can write the Euclidean distance as the following:
+One common measure of similarity is the Euclidean distance; it measures the distances between two data points, $x$ and $x'$ by taking into account the angle and the magnitude. We can write the Euclidean distance as the following:
 
 \begin{equation}
 	sim(x, x') = x^T x'
 \end{equation}
 
-Note that this distance measure doesn't normalize the vectors, so the magnitude of the vectors is factored into the measure of similarity.
+This distance measure does not normalize the vectors, so their magnitude is factored into the similarity calculations.
 
 \subsubsection{Cosine Similarity Measure}
 
-Another common measure of similarity is the Cosine similarity measure, which only accounts for the angle between two data points, $x$ and $x'$. Note that \textbf{unlike the Euclidean distance}, the cosine measure only represents \textit{similarity}, not \textit{distance}. This means that the similarity between a data point $x$, and itself, equals 1. As its name implies, this measure relies on the cosine between the two points, as found by:
+Another common solution is the Cosine similarity measure; it only accounts for the angle between two data points, $x$ and $x'$. Note that \textbf{unlike the Euclidean distance}, the cosine measure only represents \textit{similarity}, not \textit{distance}. This means that the similarity between a data point $x$, and itself, equals 1. As its name implies, this measure relies on the cosine between the two points, as found by:
 
 \begin{equation}
 	sim(x, x') = cos(\theta)
@@ -122,27 +123,27 @@ Another common measure of similarity is the Cosine similarity measure, which onl
 	= \frac{x^T x'}{ \sqrt{x^T x} \sqrt{{x'}^T x'} }
 \end{equation}
 
-Note that by dividing by the magnitudes of the vectors, we normalize the distance metric, and ensure it is only dependent on the angle between our objects.
+The division by the magnitudes of the vectors results in the normalization of the distance metric, and it ensure that the measure is only dependent on the angle between the objects.
 
 \subsection{Desirable Clustering Properties}
 
-Now that we've defined potential distance metrics, the next step is to choose a clustering technique. There are various properties of clustering methods that we might want to consider when choosing specific techniques:
+Now that the potential distance metrics are defined, the next step is to choose a clustering technique. There are various properties of clustering methods that we might want to consider when choosing specific techniques:
 
 \begin{enumerate}
 	\item \textbf{Scalable} - in terms of compute power \& memory
 	\item \textbf{Different data types} - algorithm should support arbitrary data being in $R^d$ for all $d$
-	\item \textbf{Input parameters} - many algorithms will have input parameters, and we shouldn't have to know a lot about the data to come up with good input parameters. The more we can isolate understanding about the data from the actual algorithm, the better. In other words, our algorithm should be useful even if we don't know much about the data.
+	\item \textbf{Input parameters} - The parameter tuning for the algorithm should not be difficult. The algorithm is more useful if it does not heavily rely on our accurate understanding of the data.
 	\item \textbf{Interpretable} - we should be able to interpret the results.
-	\item \textbf{Constraints} - if we have predefined constraints (i.e: we know two points should be in the same cluster, or shouldn't belong together), it's sometimes helpful to have an algorithm that uses these constraints effectively
+	\item \textbf{Constraints} - The algorithm should effectively use the predefined constraints (e.g., we know two points should be in the same cluster, or they shouldn't belong together).
 \end{enumerate}
 
-After discussing its implementation, we'll discuss the various benefits and drawbacks of agglomerative clustering, with regards to these criteria.
+The following sections cover the implementation of the  agglomerative clustering and its benefits and drawbacks.
 
 \subsection{Agglomerative Clustering Implementation}
 
-The general idea behind agglomerative clustering is that we want to measure the similarities among data points and use those to group close points together. Once we start creating groups, we'll then merge groups that are close distance-wise together, and keep repeating this process until we have one remaining group. This resulting grouping creates a hierarchy, where some points are grouped together before other points, which is best viewed as a \textbf{dendrogram}.
+The agglomerative clustering calculates the similarities among data points by grouping closer points together. The newly created groups can further be merged to other groups that are close to them; this iterative process results in the generation of bigger groups until there only remains one group. This creates a hierarchy, best viewed as a \textbf{dendrogram}.
 
-We can visualize this in the following diagram, which shows data points, and the results of an agglomerative clustering algorithm.
+We can visualize this in the following diagram, which shows data points and the results of an agglomerative clustering algorithm.
 
 \begin{minipage}{\linewidth}
 \begin{center}
@@ -151,31 +152,31 @@ We can visualize this in the following diagram, which shows data points, and the
 \end{center}
 \end{minipage}
 
-The first picture shows all the datapoints, and pictures 2 to 5 show various steps in the clustering algorithm. Step 2 groups the two red points together, step 3 groups the two green points together, step 4 groups the previous green group and the nearby blue point into a new orange group, and step 5 groups all the points together into one large group. This creates the dendrogram in picture 6.
+The first picture shows all the data points, and pictures 2 to 5 show various steps in the clustering algorithm. Step 2 groups the two red points together; step 3 groups the two green points together; step 4 groups the previous green group and the nearby blue point into a new orange group; and step 5 groups all the points together into one large group. This creates the dendrogram in picture 6.
 
 \subsubsection{Algorithm}
 
-Our general algorithm is based off our intuition and has four main steps:
+Our general algorithm is based on our intuition and has four main steps:
 
 \begin{enumerate}
-	\item Initialize each point to its own cluster
+	\item Initialize each point as its own cluster
 	\item Find the most similar pair of clusters
 	\item Merge the similar pair of clusters into a \textit{parent} cluster
-	\item Repeat steps 2 \& 3 until we have 1 cluster.
+	\item Repeat steps 2 \& 3 until we have only 1 cluster.
 \end{enumerate}
 
 \subsubsection{Questions}
 
-Although agglomerative clustering is a powerful technique, there's still various factors we should consider when implementing it. For instance:
+Although agglomerative clustering is a powerful technique, various factors should be taken into consideration when implementing it. For instance:
 
 \begin{enumerate}
 	\item \textit{How do we define similarity between clusters? How do we measure the distance between two clusters?}
 	
-	We can measure the distance between two clusters in a variety of different ways, including looking at the average distance between points, the minimum distance between points in the clusters, the distance between the means of each cluster, and the maximum distance between points in the clusters. Each way we measure the distance between clusters can highly vary the results, as we'll see later.
+	We can measure the distance between two clusters in a variety of different ways including the average distance between points, the minimum distance between points in the clusters, the distance between the means of each cluster, and the maximum distance between points in the clusters. The method used for measuring the distance between clusters can highly affect the results.
 	
 	\item \textit{How many clusters do we chose?}
 	
-	When we create the dendrogram, we can decide how many clusters we want based off a distance threshold. Alternatively, we can just cut the dendrogram horizontally at some point to see how many clusters that creates.
+	When we create the dendrogram, we can decide how many clusters we want based on a distance threshold. Alternatively, we can cut the dendrogram horizontally at its different levels to create as many clusters as we want.
 	
 \end{enumerate}
 
@@ -203,7 +204,7 @@ There are three main models we can use to determine the distance between cluster
 	    d(C_i,C_j) = max_{x \in C_i,x' \in C_j}d(x,x')
     \end{equation}
     With complete linkage, we cluster by utilizing the maximum distance between points in the two clusters.\\
-    This algorithm tends to produces compact, tight clusters of roughly equal diameter (since it favors having all the points close together).
+    This algorithm tends to produces compact and tight clusters of roughly equal diameter (since it favors having all the points close together).
     \begin{center}
         \includegraphics[width=0.70\textwidth]{complete.png}
         \captionof{figure}{Image segmentation example using complete link measurement of nearest clusters. Source: lecture 12, slide 47}
@@ -215,7 +216,7 @@ There are three main models we can use to determine the distance between cluster
 	    d(C_i,C_j) = \frac{\sum x \in C_i,x' \in C_j d(x,x')}{|C_i|\cdot |C_j|}
     \end{equation}
     With average linkage, we cluster by utilizing the average distance between points in the two clusters.\\
-    This model is robust against noise, as the distance does not depend on single pair of points unlike single link and complete link, where points can be affected by artifacts in the data.
+    This model is robust against noise because the distance does not depend on single pair of points unlike single links and complete links, where points can be affected by artifacts in the data.
     \begin{center}
         \includegraphics[width=0.70\textwidth]{average.png}
         \captionof{figure}{Image segmentation example using average link measurement of nearest clusters. Source: lecture 12, slide 48}
@@ -223,9 +224,8 @@ There are three main models we can use to determine the distance between cluster
 \end{enumerate}
 
 \subsection{Agglomerative clustering conclusions}
-As with any algorithm, agglomerative clustering has its pros and cons when it comes to clustering. 
 
-In terms of its positive characteristics;
+The positive characteristics of agglomerative clustering:
 \begin{enumerate}
 	\item Simple to implement and apply
 	\item Cluster shape adapts to dataset
@@ -233,7 +233,7 @@ In terms of its positive characteristics;
 	\item No need to specify number of clusters at initialization
 \end{enumerate}
 
-In terms of its negative characteristics;
+In terms of its negative characteristics:
 \begin{enumerate}
 	\item Can return imbalanced clusters
 	\item Threshold value for number of clusters must be specified
@@ -242,9 +242,9 @@ In terms of its negative characteristics;
 \end{enumerate}
 
 \section{K-Means Clustering}
-Another clustering algorithm is called k-means clustering. K-means identifies a fixed number of cluster "centers" as representatives of their clusters, and labels each point according to the center it is closest to. A major difference between k-means and agglomerative clustering is that k-means requires the input of a target number of clusters to run the algorithm.
+Another algorithm is k-means clustering. It identifies a fixed number of cluster "centers" as representatives of their clusters, and labels each point according to the center it is closest to. A major difference between k-means and agglomerative clustering is that k-means requires the input of a target number of clusters to run the algorithm.
 \subsection{Image Segmentation Example}
-At the top left of figure 11, we have an image with three distinct color regions, so segmenting the image using color intensity can be done by assigning each color intensity, shown on the top right, to a different cluster. In the bottom left image, however, the image is cluttered with noise. To segment the image, we can use k-means.
+At the top left of figure 11, we have an image with three distinct color regions, so segmenting the image using color intensity can be achieved by assigning each color intensity, shown on the top right, to a different cluster. In the bottom left image, however, the image is cluttered with noise. To segment the image, we can use k-means.
 
 \begin{minipage}{\linewidth}
 \begin{center}
@@ -289,7 +289,7 @@ In order to find the centers and group memberships, we start by initializing k c
 Each time it is run, k-means converges to a local minimum solution. Additionally, since the centers are initialized randomly, each run of the algorithm may return a different result. Therefore, initializing multiple runs of k-means and then choosing the most representative clustering yields the best results. The best clustering can be measured by minimizing the sum of the square distances to the centers or the variance of each cluster. K-means works best with spherical data.
 
 \subsection{Segmentation as Clustering}
-As with the example in section 4.1, clustering can be used to segment an image. While color intensity alone can be effective in situations like figure 11, images like the one below (figure 14) may require us to define a feature space, in which we choose which features of pixels should affect the clustering.
+As with the example in section 4.1, clustering can be used to segment an image. While color intensity alone can be effective in situations like Figure 11, others such as Figure 14 may require us to define a feature space, in which we choose which features of pixels should be used as input to the clustering. In other words, the choice of feature space directly affects the calculation of the similarity measure between data points; the creative choice of feature space enables us to "represent" the data points in a way that clusters are more easily distinguishable from each other.
 
 \begin{minipage}{\linewidth}
 \begin{center}
@@ -310,7 +310,7 @@ K-means method is appealing due to its speed and simplicity but not its accuracy
 It has been shown that k-means++ is Olog(K) competitive.
 
 \subsection{Evaluation of clusters}
-There are various measures that can be taken to evaluate the clustering results. For example, there is an $internal$ evaluation measure, which involves giving a single quality score the results. $External$ evaluation, on the other hand, compares the clustering results to an existing true classification. More qualitatively, we can evaluate the results of clustering based on its $generative$ measure: how well is the reconstruction of points from the clusters or is the center of the cluster a good representation of the data. Another evaluation method is a $discriminative$ method where we evaluate how well clusters correspond to the labels. We check if the clusters are able to separate things that should be separated. This measure can only be worked with supervised learning as there are no labels associated with unsupervised learning. 
+The clustering results can be evaluated in various ways. For example, there is an $internal$ evaluation measure, which involves giving a single quality score the results. $External$ evaluation, on the other hand, compares the clustering results to an existing true classification. More qualitatively, we can evaluate the results of clustering based on its $generative$ measure: how well is the reconstruction of points from the clusters or is the center of the cluster a good representation of the data. Another evaluation method is a $discriminative$ method where we evaluate how well clusters correspond to the labels. We check if the clusters are able to separate things that should be separated. This measure can only be worked with supervised learning as there are no labels associated with unsupervised learning. 
 
 \subsection{Pros \& Cons}
 There are advantages and disadvantages associated with k-means clustering technique:
@@ -350,7 +350,7 @@ We can also try to visualize the algorithm via this picture:
 \end{center}
 In this picture, we see the algorithm will generate 2 clusters. All the data points on the left converge onto one center and all the data points on the right converge onto a different center.
 \\~\\
-To learn more about mean-shift clustering, check out the next set of notes.
+To learn more about mean-shift clustering please refer to the next set of notes.
 
 % References
 \small

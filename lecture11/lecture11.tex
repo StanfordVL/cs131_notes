@@ -28,17 +28,19 @@
 
 \section{Mean-Shift}
 
+Previously, we discussed the applications of agglomerative clustering and k-means algorithm for image segmentation. This lecture focuses on a mean shift, a mode-seeking technique that analyzes a density function to identify its maxima; one of the primary application of mean-shift algorithm is image segmentation.
+In the following sections, the different steps involved in the mean-shift algorithm are detailed.
 \subsection{Optimizations}
 
-A window must be initialized at each point and shifted to the most dense area in order to correctly assign it to a cluster. This procedure can result in a large number of redundant or very similar computations. It is possible to improve the speed of the algorithm by computing window shifts in parallel or by reducing the number of windows that must be shifted over the data using a method called "basin of attraction".
+To correctly assign points to clusters, a window must be initialized at each point and shifted to the most dense area. This procedure can result in a large number of redundant or very similar computations. It is possible to improve the speed of the algorithm by computing window shifts in parallel or by reducing the number of windows that must be shifted over the data; this is achieved using a method called "basin of attraction".
 
 \paragraph{Parallelization}
-The computations required to shift different windows are independent of each other and can be split across multiple processors and computed simultaneously. By parallelizing mean-shift over multiple processors or machines it is possible to achieve a large speed increase without any loss to accuracy.
+The computations required to shift different windows are independent of each other and can be split across multiple processors and computed simultaneously. By parallelizing mean-shift over multiple processors or machines, it is possible to achieve a large speed increase without any loss to accuracy.
 
 \paragraph{Basin of Attraction}
-It is very likely that points close to the path and stopping points of the window will end up in the same cluster. Because of this, it is possible to save time by assigning those points early instead of waiting to calculate mean-shift using a window initialized at their location. \\
-Assign nearby points using the following methods after each update to the window location: \\
-Assign all points within a radius $r$ of the shift end point to the same cluster. The idea with this step is that the window has just been shifted to an area of higher density, thus it is likely that points close to this area will all be in the same cluster
+It is very likely that points close to the path and stopping points of the window will be assigned to the same cluster. Thus, these points can be assigned early without the need for calculating mean-shift operations and initializing windows at their location; this reduces the computation time. \\
+after each update to the window location, nearby points are assigned using the following methods: \\
+Assign all points within a radius $r$ of the shift end point to the same cluster. This is because the window has just been shifted to an area of higher density, thus it is likely that points close to this area all belong to the same cluster
 
 \begin{center}
 	\includegraphics[scale=0.5]{basin1.png}\\
@@ -52,11 +54,11 @@ Assign all points within radius $c$ of the path of the shift to the same cluster
     \textbf{Figure 2:} Adding points within radius $c$ of window path\\
 \end{center}
 
-There is a trade off in selecting the values for $r$ and $c$. The smaller the values, the less nearby points are assigned early and the less computations are saved, but the resulting cluster assignments will have less error if mean-shift was calculated without this method. The larger the values, the more nearby points are assigned resulting in faster speed increases, but also the possibility that the final cluster assignments will be less accurate to standard mean-shift.
+There is a trade off in selecting the values for $r$ and $c$. The smaller the values, the fewer nearby points are assigned early and the higher the computation cost will be. However, the resulting cluster assignments will have less error if mean-shift was calculated without this method. The larger the values, the more nearby points are assigned resulting in faster speed increases, but also the possibility that the final cluster assignments will be less accurate to standard mean-shift.
 
 \subsection{Technical Details}
 
-In order to correctly shift the window you must first identify a nearby area with highest density to calculate the shift vector. This can be accomplished using the multivariate kernel density estimate, which is a way to estimate the probability density function of a random variable.
+In order to correctly shift the window you must first identify a nearby area with highest density to calculate the shift vector. This can be accomplished using the multivariate kernel density estimate, a means of estimating the probability density function of a random variable.
 
 Given $n$ data points $\mathbf{x}\in\mathbb{R}^d$, the multivariate kernel density estimate, using a radially symmetric (Comaniciu \& Meer, 2002) kernel $K(x)$, is given by
 \begin{equation}
@@ -68,7 +70,7 @@ K(x)=c_kk(||x||^2),
 \end{equation}
 where $c_k$ represents a normalization constant.
 
-Selecting the appropriate $h$ is important for accurately estimating the density. Selecting a value that is too small will result in a small radius and can be subject to noise in the data. Selecting a value that is too large will include too many far away points and result in fewer clusters.
+Selecting the appropriate $h$ is crucial to achieving accurate density estimation. Selecting a value that is too small results in a small radius and can be subject to noise in the data. Selecting a value that is too large includes many far away points and results in fewer clusters.
 
 The resulting derivative of the multivariate kernel density estimate is given by
 \begin{equation}
@@ -100,7 +102,7 @@ From a given point $\mathbf{x}_t$, calculate the following steps in order to rea
 
 \subsection{Kernel Functions}
 
-A kernel function, $K(x)$ is a non-negative function that integrates to 1 over all values of $x$. These requirements ensure that kernel density estimation will result in a probability density function.
+A kernel, $K(x)$ is a non-negative function that integrates to 1 over all values of $x$. These requirements ensure that kernel density estimation will result in a probability density function.
 
 Examples of popular kernel functions include:
 \begin{itemize}
@@ -144,10 +146,10 @@ Negatives of mean-shift:
 The field of object recognition can be broken down into a number of different visual recognition tasks. 
 
 \paragraph{Classification} 
-Classification involves teaching computers to properly to label images based on their category of object. It focuses on answering the questions, "is this image of a particular object?" and "does this image contain a particular object?" Typically, classification questions have yes or no answers. For example, typical classification questions could ask if the image contains a building or if the image is of a lake.
+Classification involves teaching computers to properly label images based on the categories of object. It focuses on answering the questions, "is this image of a particular object?" and "does this image contain a particular object?" Typically, classification questions have yes or no answers. For example, typical classification questions could ask if the image contains a building or if the image is of a lake.
 
 \paragraph{Image search} 
-This recognition task involves searching a collection of photos for photos of a particular object, like on Google Photos.
+This recognition task involves searching a collection of photos for photos of a particular object; an examples is Google Photos.
 
 \paragraph{Organizing photo collections} 
 Object recognition can help organize photo collections based upon location of the photos, similarity of activities, the people who appear in the photos, and other recognizable objects.
@@ -157,7 +159,7 @@ Detection focuses on the question, "where is a particular object in the image?" 
 Detection can also be targeted at finding geometric and semantic attributes. For example, detection tasks include asking questions such as "is the traffic light red?", "what angle do two buildings make with one another?". Other common attributes found by detection include the distance objects are from one another, and what view of the object the image has.
 
 \paragraph{Single Instance Recognition}
-Instead of searching to generally categorize objects, single instance recognition seeks to recognize a particular object or landmark in images. For example, we may want to determine if the picture contains the Golden Gate Bridge or just a bridge. Or, we may want to find a box of a specific brand of cereal.
+Instead of searching to generally categorize objects, single instance recognition seeks to recognize a particular object or landmark in images. For example, we may want to determine if the picture contains the Golden Gate Bridge or just a bridge. We may want to find a box of a specific brand of cereal.
 
 \paragraph{Activity or event recognition} Activity or event recognition is used to detect what is occurring in a photo. For example, we can ask what people are doing or if the event is a wedding.
 
@@ -165,7 +167,7 @@ Instead of searching to generally categorize objects, single instance recognitio
 The challenges to building good object recognition methods include both image and category complications. Since computers can only see the pixel values of images, object recognition methods must account for a lot of variance.
 
 \paragraph{Category numbers}
-Studies have shown that humans can recognize roughly 10,000 to 30,000 categories of objects. Currently, the best visual recognition methods can work with about 200 categories for detection, and 1,000 for classification. There are many researchers working to build image datasets to improve object recognition, and recognition with more categories is the subject of many competitions!
+Studies have shown that humans can recognize roughly 10,000 to 30,000 categories of objects. Currently, the best visual recognition methods can work with about 200 categories for detection, and 1,000 for classification. Many researchers are working to build image datasets to improve object recognition; performing recognition on higher number of categories is the subject of many competitions!
 
 \paragraph{Viewpoint variation} There are many potential ways to view an object, and the change in viewpoint can lead an object to look very different.
 
@@ -179,7 +181,7 @@ Studies have shown that humans can recognize roughly 10,000 to 30,000 categories
 
 \paragraph{Background clutter} Similarities between the texture, color, and shapes in the background and the foreground can make it difficult to detect an object by blending in the object and/or causing it to appear differently.
 
-\paragraph{Intra-class variation} Within one class of objects, there can be a lot of variation in shape. For example, everything from a barstool to a lounge chair, and a beanbag to an abstract artistic bench can be considered a chair. 
+\paragraph{Intra-class variation} There can be significant shape variations event within one class of objects. For example, everything from a barstool to a lounge chair, and a beanbag to an abstract artistic bench can be considered a chair. 
 
 \section{K-nearest neighbors}
 
@@ -222,7 +224,7 @@ We can enhance the nearest neighbors classifier by looking at the k nearest neig
 Like the nearest neighbor classifier, the k-nearest neighbor algorithm allows for complex decision boundaries using a relatively simple equation!
 
 \subsection{Pros of using k-nearest neighbors}
-K-NN is a very simple algorithm, which makes it a good one to try out at first. IN addition, K-NN has very flexible decision boundaries. Another reason to use K-NN is that with infinite examples, 1-NN provably has error that is at most twice Bayes optimal error (proof is out of scope for this class).
+K-NN is a very simple algorithm which makes it a good one to try out at first. IN addition, K-NN has very flexible decision boundaries. Another reason to use K-NN is that with infinite examples, 1-NN provably has error that is at most twice Bayes optimal error (proof is out of scope for this class).
 
 \subsection{Problems with k-nearest neighbors}
 
