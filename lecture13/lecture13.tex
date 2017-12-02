@@ -41,7 +41,7 @@
 
 \section{Introduction to Facial Recognition}
 \subsection{Neuroscience Background}
-In the 1960's and 1970's, neuroscientists discovered that, depending on the angle of observation, certain neurons in the brain fire when looking at a face. More recently, they have to come to believe that an area of the brain known as the \textbf{Fusiform Face Area (FFA)} is primarily responsible for reacting to faces. These advances in the biological understanding of facial recognition have been mirrored by similar advances in computer vision, as new techniques have attempted to come closer to the standard of human facial recognition. 
+In the 1960's and 1970's, neuroscientists discovered that depending on the angle of observation, certain brain neurons fire when looking at a face. More recently, they have come to believe that an area of the brain known as the \textbf{Fusiform Face Area (FFA)} is primarily responsible for reacting to faces. These advances in the biological understanding of facial recognition have been mirrored by similar advances in computer vision, as new techniques have attempted to come closer to the standard of human facial recognition. 
 
 \subsection{Applications}
 Computer facial recognition has a wide range of applications:
@@ -50,13 +50,13 @@ Computer facial recognition has a wide range of applications:
   \item \underline{Surveillance:} By recognizing the faces of specific individuals, we can use surveillance cameras to detect when they enter a location.
   \item \underline{Album Organization:} If we can recognize a specific person, we can group images in which they appear.
   \item \underline{Person tracking:} If we can recognize a specific person, we can track their location through frames of video (useful for surveillance or for robots in the home).
-  \item \underline{Emotions and Expressions:} By detecting emotions or expressions in faces, we can build smart devices that interact with us based on mood.
-  \item \underline{Security and Warfare:} If we can recognize a specific person, we can identify enemies of interest in drone images and video.
+  \item \underline{Emotions and Expressions:} By detecting emotions or facial expressions, we can build smart devices that interact with us based on mood.
+  \item \underline{Security and Warfare:} If we can recognize a specific person, we can identify potential threats in drone images and video.
   \item \underline{Teleconferencing:} If we can recognize specific people, then teleconferencing applications could automatically provide information to users about who they are communicating with.
 \end{itemize}
 
 \subsection{A Key Distinction: Detection vs. Recognition}
-While face \textbf{Detection} entails determining whether an image contains a face and where in the image the face exists, face \textbf{Recognition} entails determining \underline{whose} face an image contains.
+While face \textbf{detection} determines whether an image contains faces and where in the image they are, face \textbf{recognition} determines to \underline{whom} a detected face belongs to (i.e., identifying the identity of the person).
 
 \subsection{Space of Faces}
 If we consider an $m \times n$ image of a face, that image can be represented by a point in high dimensional space (${\mathbb{R}}^{mn}$). But relatively few high-dimensional vectors consist of valid face images (images can contain much more than just faces), and thus the region that an arbitrary face image could fall into is a relatively small subspace. The task is to effectively model this subspace of face images.
@@ -75,7 +75,7 @@ In order to model this subspace or "face-space" we compute the k-dimensional sub
 \begin{itemize}
   \item Assume that most face images lie on a low-dimensional subspace determined by the first $k$ directions of maximum variance.
   \item Use Principle Components Analysis (PCA) to determine the vectors or “eigenfaces” that span that subspace.
-  \item Represent all face images in the dataset as linear combinations of eigenfaces, where eigenfaces are sort of defined as the principal components of SVD decomposition.
+  \item Represent all face images in the dataset as linear combinations of eigenfaces, where eigenfaces are defined as the principal components of SVD decomposition.
 \end{itemize}
 
 \subsubsection{What are eigenfaces?}
@@ -197,7 +197,7 @@ The difference between PCA and LDA projections is demonstrated in the figure abo
 
 \subsection{General Idea}
 
-LDA operates using two values: between class scatter and within class scatter. Between class scatter is concerned with the distance between different class clusters, whereas within class scatter refers to the distance between points of a class. LDA maximizes between class scatter and minimizes within class scatter.
+LDA operates using two values: between class scatter and within class scatter. Between class scatter is concerned with the distance between different class clusters, whereas within class scatter refers to the distance between points of a class. LDA maximizes the between-class scatter and minimizes the within-class scatter.
 
 \begin{figure}[H]
   \centering
@@ -211,7 +211,7 @@ We want to find a projection $w$ that maps points with classes 0 and 1 in the sp
 
 $$J(w) = \frac{S_B\text{ when projected onto }w}{S_W\text{ when projected onto }w}$$ 
 
-In this equation, $S_B$ represents between class scatter and $S_W$ represents within class scatter. Let us then define a variable $\mu_i$ that represents the mean of a class' points:
+In this equation, $S_B$ represents between class scatter and $S_W$ represents the within-class scatter. Let us then define a variable $\mu_i$ that represents the mean of a class' points:
 
 $$\mu_i = E_{X|Y}[X|Y=i]$$
 
@@ -280,7 +280,7 @@ $$w* = S_W^{-1}(\mu_1-\mu_0) = (\Sigma_1-\Sigma_0)^{-1}(\mu_1-\mu_0)$$
 \subsubsection{Mathematical Formulation}
 We want to learn a projection $W$ such that it converts all the points from $x\in \mathbb{R}^m$ to a new space $z\in \mathbb{R}^n$, where in general $m$ and $n$ are unknown:
 $$z = w^Tx, x\in \mathbb{R}^m, z\in \mathbb{R}^n$$
-After the projection, the between class scatter is $\widetilde{S}_B = W^TS_BW$, where $W$ and $S_B$ are calculated from our original dataset. The within class scatter is $\widetilde{S}_W = W^TS_WW$. So the objective becomes: 
+After the projection, the between-class scatter is $\widetilde{S}_B = W^TS_BW$, where $W$ and $S_B$ are calculated from our original dataset. The within-class scatter is $\widetilde{S}_W = W^TS_WW$. So the objective becomes: 
 $$W_{opt} = \argmax_W \frac{\left|\widetilde{S}_B\right|}{\left|\widetilde{S}_W\right|} = \argmax_W \frac{\left|W^TS_BW\right|}{\left|W^TS_WW\right|}$$
 Again, after applying Lagrange multipliers we obtain a generalized eigenvector problem, where we have:
 $$S_B w_i = \lambda_iS_Ww_i, i = 1, \dots, m$$
@@ -305,7 +305,7 @@ And therefore the rank of $W_{opt}$ is limited as well.
   \caption{Eigenface vs. Fisherface. Source: Lecture 13, slide 61}
 \end{figure}
 
-Error rates for the two algorithms (and a variation of standard Eigenface) are plotted in the figure above. Eigenface's error rate actually improves by removing the first three prinicple components. Fisherface, as shown in the figure above, gives the lowest error rate.
+Error rates for the two algorithms (and a variation of standard Eigenface) are plotted in the figure above. Eigenface's error rate actually improves by removing the first three principle components. Fisherface, as shown in the figure above, gives the lowest error rate.
 
 
 \small
