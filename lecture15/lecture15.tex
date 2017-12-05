@@ -38,16 +38,16 @@ Previously, we have described methods to classify if an object is in an image, b
 \end{figure}
 
 \subsection{Challenges}
-Object detection, however, faces many challenges. The challenges include the illumination of the object, viewpoint of the photo, deformations of the object, and intra-class variability making objects of the same category appear different and making it difficult to detect and classify objects correctly. Another problem is that the algorithms in this chapter only give the 2D location of the object in the image and not the 3D location. For example, the algorithms won't tell you if an object is in front or behind another object. Additionally, the following object detectors do not provide the boundary of an object it finds; the object detector just provides a rectangle of where the object was found.
+Object detection, however, faces many challenges. The challenges include the illumination of the object, viewpoint of the photo, deformations of the object, and intra-class variability making objects of the same category appear different and making it difficult to detect and classify objects correctly. Another problem is that the algorithms in this chapter only give the 2D location of the object in the image and not the 3D location. For example, the algorithms won't tell you if an object is in front or behind another object. Additionally, the following object detectors do not provide the boundary of an object it finds; the object detector just provides a bounding box of where the object was found.
 
 \section{Current Object Detection Benchmarks}
 Today, object detection has practically been solved for certain applications such as face detection. To evaluate the performance of an object detector, researchers use standardized object detection benchmarks. Benchmarks are used to make sure we are moving forward and performing better with new research.
 
 \subsection{PASCAL VOC} 
-The first widely used benchmark was the PASCAL VOC Challenge, or the Pattern Analysis, Statistical Modeling, and Computational Learning Visual Object Classes challenge. The PASCAL VOC challenge was used from 2005 to 2012 and tested 20 categories. PASCAL was regarded as a high quality benchmark because its test categories had high variability within each category. Each test image also had bounding boxes for all objects of interest like cars, people, cats, etc. PASCAL also had annual classification, detection, and segmentation challenges.
+The first widely used benchmark was the PASCAL VOC Challenge \cite{pascal-voc-2012}, or the Pattern Analysis, Statistical Modeling, and Computational Learning Visual Object Classes challenge. The PASCAL VOC challenge was used from 2005 to 2012 and tested 20 categories. PASCAL was regarded as a high quality benchmark because its test categories had high variability within each category. Each test image also had bounding boxes for all objects of interest like cars, people, cats, etc. PASCAL also had annual classification, detection, and segmentation challenges.
 
 \subsection{ImageNet Large Scale Visual Recognition Challenge}
-The benchmark that replaced PASCAL is the ImageNet Large Scale Visual Recognition Challenge (ILSVR). The ILSVR Challenge tested 200 categories of objects, many more than what PASCAL tested, had more variability of the types of objects, and had many objects in a single image.
+The benchmark that replaced PASCAL is the ImageNet Large Scale Visual Recognition Challenge (ILSVR) \cite{ILSVRC15}. The ILSVR Challenge tested 200 categories of objects, many more than what PASCAL tested, had more variability of the types of objects, and had many objects in a single image.
 
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{ilsvr.png}
@@ -55,7 +55,7 @@ The benchmark that replaced PASCAL is the ImageNet Large Scale Visual Recognitio
 \end{figure}
 
 \subsection{Common Objects in Context}
-Another benchmark that is still used today is the Common Objects in Context (COCO) challenge. The COCO challenge tests 80 categories, but in addition to testing rectangles of locations of objects, it also tests object segmentation, which are detailed bounding areas of an object. Creating the test images for the dataset used in the COCO challenge is very time consuming because each object that is tested needs to be traced almost perfectly.
+Another benchmark that is still used today is the Common Objects in Context (COCO) challenge \cite{DBLP:journals/corr/LinMBHPRDZ14}. The COCO challenge tests 80 categories, but in addition to testing bounding boxes of locations of objects, it also tests object segmentation, which are detailed bounding areas of an object. Creating the test images for the dataset used in the COCO challenge is very time consuming because each object that is tested needs to be traced almost perfectly.
 
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{coco.png}
@@ -77,7 +77,7 @@ When evaluating an object detection algorithm, we want to compare the prediction
 When comparing predictions with ground truth, there are four different classifications: \\
 
 \textbf{1. \hspace{0.25cm} True Positive (TP)}\\
-True positives are objects that both the algorithm (prediction) and annotator (ground truth) locate. In order to be more robust to slight variations between the prediction and ground truth, predictions are considered true positives when the overlap between the prediction and ground truth is greater than 0.5 (Figure \ref{fig:evaluations}a) . True positives are also sometimes referred to as hits.\\
+True positives are objects that both the algorithm (prediction) and annotator (ground truth) locate. In order to be more robust to slight variations between the prediction and ground truth, predictions are considered true positives when the overlap between the prediction and ground truth is greater than 0.5 (Figure \ref{fig:evaluations}a). The overlap between the prediction and ground truth is defined as the intersection over the union of the prediction and ground truth. True positives are also sometimes referred to as hits.\\
 
 \textbf{2. \hspace{0.25cm} False Positive (FP)}\\
 False positives are objects that the algorithm (prediction) locates but the annotator (ground truth) does not locate. More formally, false positives occur where the overlap of the prediction and ground truth is less than 0.5 (Figure \ref{fig:evaluations}b). False positives are also referred to as false alarms.\\
@@ -175,11 +175,11 @@ An approach to the detection problem is to treat it as a classification problem.
 \subsection{Feature Extraction and Object Representation}
 Dalal and Triggs \cite{hog_human_detection} show the effectiveness of using Histograms of Oriented Gradient (HOG) descriptors for human detection. Although their feature extraction methods were focused on human detection, they can be applied for detecting various objects. 
 
-Recall HOG descriptors from lecture 8. Essentially, an image window is divided into blocks and the magnitude of the gradients of the pixels in each block are accumulated into bins according to the direction of the gradients. These local histograms of the blocks are then normalized and concatenated to produce a feature representation of the the image window.
+Recall HOG descriptors from lecture 8. Essentially, an image window is divided into blocks and the magnitude of the gradients of the pixels in each block are accumulated into bins according to the direction of the gradients. These local histograms of the blocks are then normalized and concatenated to produce a feature representation of the image window.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth, scale=0.3]{person_template.png}
-	\caption{An image of a person along with its respective HOG descriptor. Note that the last two images the HOG descriptor weighted by the positive and negative weights of the classifier using them. The outline of the person is very visible in the weighted descriptors. Image source: Dalal and Triggs \cite{hog_human_detection}}
+	\caption{An image of a person along with its respective HOG descriptor. Note that the last two images are the HOG descriptor weighted by the positive and negative weights of the classifier using them. The outline of the person is very visible in the weighted descriptors. Image source: Dalal and Triggs \cite{hog_human_detection}}
     \label{fig:hog_descriptor}
 \end{figure}
 
@@ -289,8 +289,8 @@ part and the root (see Figure \ref{fig:star_model}a for illustration)
 In face-detection, for example, we could have a detector for
 the entire body as the root and thus define the location of all body parts relative
 to the location of entire body. This is shown in Figure \ref{fig:star_model}b,
-where the cyan box is the location of global person detection (which we use as the 
-root) and the yellow boxes are the results of the detection of each part.\\
+where the cyan box is the location of the bounding box from global person detection (which we use as the 
+root) and the yellow boxes are the bounding boxes resulting from the detection of each part.\\
 
 This means that
 the head should be near the top-center of the global location of the person, the
@@ -397,9 +397,9 @@ Recall that the score for each filter is
 the inner product of the filter (as a vector) and $\phi(p_i,H)$ (defined as
 the HOG feature vector of a window defined by position $p_i$ of the filter). Note
 that the windows can be visualized in the HOG pyramid in Figure 
-\ref{fig:deformable_score1}: the window for the root is the cyan box, and the window
-for each of the parts is the yellow box corresponding to that part. We are taking
-the HOG feature vector of the portion of the image enclosed in these boxes and seeing how well it matches with the HOG features of the template for that part.\\
+\ref{fig:deformable_score1}: the window for the root is the cyan bounding box, and the window
+for each of the parts is the yellow bounding box corresponding to that part. We are taking
+the HOG feature vector of the portion of the image enclosed in these bounding boxes and seeing how well it matches with the HOG features of the template for that part.\\
 
 Returning to the score formula, the right term represents the sum of the 
 deformation penalties for each part.
@@ -513,6 +513,7 @@ Similarly, with the bottom image, DPM indeed detects an object very close to a c
       \label{fig:fullyconnected}
   \end{figure}
 
+\newpage
 % References
 \small
 \bibliographystyle{plain}
