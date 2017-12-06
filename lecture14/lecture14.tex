@@ -15,7 +15,7 @@
 \title{Lecture \#14: Visual Bag of Words}
 
 \author{
-  Megha Srivastava, Jessica Taylor, Shubhang Desai, Samuel Premutico,  etc. \\
+  Megha Srivastava, Jessica Taylor, Shubhang Desai, Samuel Premutico,  Zhefan Wang \\
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
@@ -47,9 +47,9 @@ The origins of applying the "Bag of Words" model to images comes from Texture Re
 
 2. Documents consist of words, and we can consider using a dictionary of words with the features of a document being the words it contains. Thus, every document is represented by a histogram across the words in the dictionary - one would expect, for example, the document of George Bush's state of the union address in 2001 to contain high relative frequencies for "economy", "iraq", "army", etc. 
 
-Thus, a "bag of words" can be viewed as a histogram representing frequencies across a vocabulary developed over a set of images or documents - new data then can be represented in this 
+Thus, a "bag of words" can be viewed as a histogram representing frequencies across a vocabulary developed over a set of images or documents - new data then can be represented with this model and used for prediction tasks. 
 
-\section{Bag of Words Outline}
+\section{Algorithm Summary}
 Let's describe in detail how the Bag of Words algorithm can be applied to a large set of images.
 
 \subsection{Extracting Interesting Features}
@@ -107,7 +107,7 @@ So far, we have thrown away the spatial information. But there is a simple yet s
 \subsection{Pyramids}
 A pyramid is built by using multiple copies	of the source image. Each level in the pyramid is $\frac{1}{4}$ of the size of the previous level. The lowest level is of the highest resolution and the highest level is of the lowest resolution. If illustrated graphically, the entire multi-scale representation looks like a pyramid, with the original image on the bottom and each cycle's resulting smaller image stacked one atop the other. {\cite{pyramid}}
 \begin{center}
-\includegraphics[width=8cm,height=6.4cm]{pyramid.PNG}
+\includegraphics[width=8cm,height=6.4cm]{pyramid.PNG} 
 \end{center}
 \subsection{Bag of Words + Pyramids}
 Bag of Words alone doesn't discriminate if a patch was obtained from the top, middle or bottom of the image because it doesn't save any spatial information. Spatial pyramid matching partitions the image into increasingly fine sub-regions and allows us to computes histograms (BoW) of local features inside each sub-region. \cite{quora}\\
@@ -120,7 +120,7 @@ If the BoWs of the upper part of the image contain "sky visual words", the BoWs 
 \includegraphics[width=10cm,height=6.4cm]{pyramid_data1.PNG}
 \includegraphics[width=10cm,height=6.4cm]{pyramid_data2.PNG}
 \end{center}
-Notice that as expected, incorporating pyramid matching always generate better result than single level feature extraction.
+Strong features (ie.larger vocabulary size) is better than weaker features (ie. smaller vocabulary size). Notice also that as expected, incorporating pyramid matching always generate better result than single level feature extraction. This is exactly what we expected because under the same circumstance, pyramid approach encodes more information (ie.spacial information) than single-level approach does.
 
 \section{Naive Bayes}
 \subsection{Basic Idea}
