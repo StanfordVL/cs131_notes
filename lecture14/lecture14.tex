@@ -28,24 +28,24 @@
 
 
 \section{Introduction}	
-In this lecture we learn of another approach to recognition. As a recap of our current discussion of the process of recognition, we start with an image containing an object we want to recognize. From this image we create some sort of representation of the image into a vector describing important features of the image.  These feature vectors, for example, could be the raw color values of the image or contain information about the position of the pixel in the image as we have seen and implemented in Homework 5. We then create a space representation of the image to view the image values in a lower dimensional space.  Every image is then converted into a set of coeffecients and projected into the PCA space.  The transformed data is then classified using a classifier. These classifiers include K-means and HAC as we have used in Homework 5.  This process of going from an image to a useful representation of the image in a lower dimensional space can be done in many ways.  In this lecture, we discuss another way named Visual Bag of Words.
+In this lecture, we learn another approach to recognition. To recognize objects in images, we need to first represent them in the form of feature vectors. Feature vectors are mathematical representations of an image's important features.  These feature vectors, for example, can be the raw color values of the image or contain information about the position of the pixel in the image as we have seen and implemented in Homework 5. We then create a space representation of the image to view the image values in a lower dimensional space.  Every image is then converted into a set of coefficients and projected into the PCA space.  The transformed data is classified using a classifier. Some examples of such classifiers include K-means and HAC.  This process of going from an image to a useful representation of the image in a lower dimensional space can be achieved in many ways.  In this lecture, we discuss another approach entitled Visual Bag of Words.
 
 \subsection{Idea of Bag of Words}
-The idea of "Bag of Words" is a way to simplify object representation as a collection of their subparts for purposes such as classification. The model originated in natural language processing, where we consider texts such as documents, paragraphs, and sentences as collections of words - effectively "bags" of words. Consider a paragraph - a list of words and their frequencies can be considered a "bag of words" that represents the particular paragraph, which we can then use as a representation of the paragraph for tasks such as sentiment analysis, spam detection, topic modeling, etc. 
+The idea behind "Bag of Words" is a way to simplify object representation as a collection of their subparts for purposes such as classification. The model originated in natural language processing, where we consider texts such as documents, paragraphs, and sentences as collections of words - effectively "bags" of words. Consider a paragraph - a list of words and their frequencies can be considered a "bag of words" that represents the particular paragraph, which we can then use as a representation of the paragraph for tasks such as sentiment analysis, spam detection, and topic modeling. 
 
-Although "Bag of Words" appears associated with language, the idea of simplifying complex objects into collections of their subparts can be extended to different kinds of objects. In Computer Vision,we can consider an \textbf{image} to be a \textbf{collection of image features}. By incorporating frequency counts of these features, we can apply the "Bag of Words" model towards images and use this for prediction tasks such as image classification, face detection, etc.
+Although "Bag of Words" appears to be associated with language, the idea of simplifying complex objects into collections of their subparts can be extended to different types of objects. In Computer Vision, we can consider an \textbf{image} to be a \textbf{collection of image features}. By incorporating frequency counts of these features, we can apply the "Bag of Words" model towards images and use this for prediction tasks such as image classification and face detection.
 
 There are two main steps for the "Bag of Words" method when applied to computer vision, and these will further be explored in the Outline section below. 
 
-1. Build a "dictionary" or "vocabulary" of features across many images - what kinds of common features are there in images? We can consider, for example, color scheme of the room, parts of faces such as eyes, different types of objects, etc.
+1. Build a "dictionary" or "vocabulary" of features across many images - what kinds of common features exist in images? We can consider, for example, color scheme of the room, parts of faces such as eyes, and different types of objects.
 
 2. Given new images, represent them as histograms of the features we had collected - frequencies of the visual "words" in the vocabulary we have built. 
 \subsection{Origins}
 The origins of applying the "Bag of Words" model to images comes from Texture Recognition and, as previously mentioned, Document Representation. 
 
-1. Textures consist of repeated elements, called textons - for example, a net consists of repeated holes, a brick wall consists of repeated brick pieces, etc. If we were to consider each texton a feature, then each image could be represented as a histogram across these features - where the texton in the texture of the image would have high frequency in the histogram. Images with multiple textures, therefore, could be represented by histograms with high values for multiple features.  
+1. Textures consist of repeated elements, called textons - for example, a net consists of repeated holes and a brick wall consists of repeated brick pieces. If we were to consider each texton a feature, then each image could be represented as a histogram across these features - where the texton in the texture of the image would have high frequency in the histogram. Images with multiple textures, therefore, can be represented by histograms with high values for multiple features.  
 
-2. Documents consist of words, and we can consider using a dictionary of words with the features of a document being the words it contains. Thus, every document is represented by a histogram across the words in the dictionary - one would expect, for example, the document of George Bush's state of the union address in 2001 to contain high relative frequencies for "economy", "iraq", "army", etc. 
+2. Documents consist of words which can be considered their features. Thus, every document is represented by a histogram across the words in the dictionary - one would expect, for example, the document of George Bush's state of the union address in 2001 to contain high relative frequencies for "economy", "Iraq", "army", etc. 
 
 Thus, a "bag of words" can be viewed as a histogram representing frequencies across a vocabulary developed over a set of images or documents - new data then can be represented with this model and used for prediction tasks. 
 
@@ -53,14 +53,14 @@ Thus, a "bag of words" can be viewed as a histogram representing frequencies acr
 Let's describe in detail how the Bag of Words algorithm can be applied to a large set of images.
 
 \subsection{Extracting Interesting Features}
-The first step in the Bag of Words algorithm is extracting the features of the images. We will eventually use these features to find the most common features across our dataset of images. We can choose any type of feature we want to find our features. For example, we can simply split our images into a grid and grab the subimages as features (shown below). Or, we can use corner detection of SIFT features as our features.
+The first step in the Bag-of-Words algorithm is extracting the features of the images. We eventually use these features to find the most common features across our dataset of images. We can choose any type of feature we want to find our features. For example, we can simply split our images into a grid and grab the subimages as features (shown below). Or, we can use corner detection of SIFT features as our features.
 \begin{center}
 \includegraphics[scale=0.5]{grid_features.png}\\
 Using grid of subimages as features \cite{slides}
 \end{center}
 
 \subsection{Learning Visual Vocabulary}
-Once we have our features, we must turn this large feature set into a small of "themes". These "themes" are analogous to the "words" in the Natural Language Processing version of the algorithm. As mentioned above, in the Computer Vision application, the "words" are called textons.
+Once we have our features, we must turn this large feature set into a small set of "themes". These "themes" are analogous to the "words" in the Natural Language Processing version of the algorithm. As mentioned above, in the Computer Vision application, the "words" are called textons.
 
 To find textons, we simply cluster our features. We can use any clustering technique (K-Means is most common, but Mean Shift or HAC may also work) to cluster the features. We then use the centers of each cluster as the textons. Our set of textons is known as a visual vocabulary. An example of a visual vocabulary is given below.
 \begin{center}
@@ -80,12 +80,12 @@ Once we have built our codebook, we can use it to do interesting things. First, 
 Representing our images as a histogram of texton frequencies \cite{slides}
 \end{center}
 
-As an aside, we can create our visual vocabulary from a different dataset than the dataset that we are interested in classifying/clustering, and so long as our first dataset is representative of the second, this algorithm will be successful.
+We can create our visual vocabulary from a different dataset than the dataset that we are interested in classifying/clustering, and so long as our first dataset is representative of the second, this algorithm will be successful.
 
 \subsection{Large-Scale Image Search}
-Large-scale image matching is one of the ways that the Bag of words model has been useful. Given a large database, which can hold tens of thousands of object instances, how can one match an images to this database?
+Large-scale image matching is one of the ways that the Bag-of-words model has been useful. Given a large database, which can hold tens of thousands of object instances, how can one match an images to this database?
 
-The Bag of words model can help build the database.  First features can be extracted from the database images. Then we can learn a vocabulary using k-means (typical k:100,000).  Next we compute the weights for each word.  Going back to the word dictionary example, weighting the words can help us decrease the importance of certain words.  If we are trying to find the topic of a document, we can give words like "the", "a", and "is" low weights since they are likely to be common between documents and used frequently within a document.  With images we can do the same, giving useless features low weights and the more important features higher weights.  Once the features have been weighted, we can create an inverted file mapping words to images.
+The Bag-of-words model can help build the database.  First, features can be extracted from the database images. Then we can learn a vocabulary using k-means (typical k:100,000).  Next we compute the weights for each word.  Going back to the word dictionary example, weighting the words can help us decrease the importance of certain words.  If we are trying to find the topic of a document, we can give words like "the", "a", and "is" low weights since they are likely to be common between documents and used frequently within a document.  With images we can do the same, giving useless features low weights and the more important features higher weights.  Once the features have been weighted, we can create an inverted file mapping words to images.
 
 Term Frequency Inverse Document Frequency (TF-IDF) scoring weights each word by it's document frequency.  
 
@@ -99,10 +99,10 @@ $$Bin_{j} = frequncy_{j\,in\,I} * IDF$$
 
 We can create an inverted file that holds the mapping of words to documents to quickly compute the similarity between a new image and all of the images in the database. If we have images that have around 1000 features, and a database of around 100,000 visual words, each histogram will be extremely sparse.  We would only consider images whose bins overlap with the new image.
 
-Large-scale image search works well for CD covers and movie posters and real time performance is possible. The downside for the large scale image search is that the performance of the algorithm degrades as the database grows. Using the Bag of Words model for this problem also sometimes results in noisy image similarities due to quantization error and imperfect feature detection.\cite{Large-scale-collections}
+Large-scale image search works well for CD covers and movie posters, and real-time performance is possible. The downside for the large scale image search is that the performance of the algorithm degrades as the database grows. Using the Bag-of-Words model for this problem sometimes results in noisy image similarities due to quantization error and imperfect feature detection.\cite{Large-scale-collections}
 \section{Spatial Pyramid Matching}
 \subsection{Motivation}
-So far, we have thrown away the spatial information. But there is a simple yet smart method to incorporate the spatial information in the model: spatial pyramid matching.
+So far, we have not exploited the spatial information. But there is a simple yet smart method to incorporate the spatial information in the model: spatial pyramid matching.
 
 \subsection{Pyramids}
 A pyramid is built by using multiple copies	of the source image. Each level in the pyramid is $\frac{1}{4}$ of the size of the previous level. The lowest level is of the highest resolution and the highest level is of the lowest resolution. If illustrated graphically, the entire multi-scale representation looks like a pyramid, with the original image on the bottom and each cycle's resulting smaller image stacked one atop the other. {\cite{pyramid}}
@@ -129,7 +129,7 @@ Once we have produced a visual word histogram, we can use Naive Bayes to classif
 \includegraphics[width=10cm,height=4cm]{Bayes_Histogram}
 \end{center}
 
-Consider some visual word histogram \textit{X}, where $x_i$ is the count of visual word \textit{i} in the histogram. Since we only care about the presence or absence of word \textit{i}, we have $x_i \in \{0,1\}$.  
+Consider some visual word histogram \textit{X}, where $x_i$ is the count of visual word \textit{i} in the histogram. We are only interested in the presence or absence of word \textit{i}, we have $x_i \in \{0,1\}$.  
 \subsection{Prior}
 $P(c)$ denotes that probability of encountering one object class versus others. For all $m$ object classes, we then have $$\sum_{i=1}^m P(c)=1$$ For an image represented by histogram $x$, and some object class $c$, we can compute $$P(x|c) = \prod_{i=1}^m P(x_i|c)$$
 \subsection{Posterior}
@@ -160,9 +160,9 @@ $$c^*=arg{max}_{c}logP(c|x)$$
 $$c^*=arg{max}_{c}logP(c)+\sum_{i=1}^mlogP(x_i|c)$$
 
 % References
-{\small
-\bibliographystyle{plain}
-\bibliography{bibliography.bib}
-}
+%{\small
+%\bibliographystyle{plain}
+%\bibliography{bibliography.bib}
+%}
 
 \end{document}

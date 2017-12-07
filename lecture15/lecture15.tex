@@ -31,23 +31,23 @@
 
 
 \section{Introduction to Object Detection}
-Previously, we have described methods to classify if an object is in an image, but now we will describe methods that detect and localize generic objects in images from various categories, such as cars, people, etc. The categories that are detected depend on the application. For example, self-driving cars would need to detect other cars and traffic signs.
+Previously, we introduced methods for detecting objects in an image; in this lecture, we describe methods that detect and localize generic objects in images from various categories such as cars and people. The categories that are detected depend on the application domain. For example, self-driving cars need to detect other cars and traffic signs.
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{object-detector-intro.png}
     \caption{An example of an object detection algorithm detecting the categories of a person, dog, and a chair}
 \end{figure}
 
 \subsection{Challenges}
-Object detection, however, faces many challenges. The challenges include the illumination of the object, viewpoint of the photo, deformations of the object, and intra-class variability making objects of the same category appear different and making it difficult to detect and classify objects correctly. Another problem is that the algorithms in this chapter only give the 2D location of the object in the image and not the 3D location. For example, the algorithms won't tell you if an object is in front or behind another object. Additionally, the following object detectors do not provide the boundary of an object it finds; the object detector just provides a bounding box of where the object was found.
+Object detection, however, faces many challenges. The challenges include the varying illumination conditions, changes in the viewpoints, object deformations, and intra-class variability; this makes objects of the same category appear different and makes it difficult to correctly detect and classify objects. In addition, the algorithms introduced herein only give the 2D location of the object in the image and not the 3D location. For example, the algorithms cannot determine if an object is in front or behind another object. Additionally, the following object detectors do not provide the boundary of an object it finds; the object detector just provides a bounding box of where the object was found.
 
 \section{Current Object Detection Benchmarks}
-Today, object detection has practically been solved for certain applications such as face detection. To evaluate the performance of an object detector, researchers use standardized object detection benchmarks. Benchmarks are used to make sure we are moving forward and performing better with new research.
+Today, object detection has practically been addressed for certain applications such as face detection. To evaluate the performance of an object detector, researchers use standardized object detection benchmarks. Benchmarks are used to make sure we are moving forward and performing better with new research.
 
 \subsection{PASCAL VOC} 
 The first widely used benchmark was the PASCAL VOC Challenge \cite{pascal-voc-2012}, or the Pattern Analysis, Statistical Modeling, and Computational Learning Visual Object Classes challenge. The PASCAL VOC challenge was used from 2005 to 2012 and tested 20 categories. PASCAL was regarded as a high quality benchmark because its test categories had high variability within each category. Each test image also had bounding boxes for all objects of interest like cars, people, cats, etc. PASCAL also had annual classification, detection, and segmentation challenges.
 
 \subsection{ImageNet Large Scale Visual Recognition Challenge}
-The benchmark that replaced PASCAL is the ImageNet Large Scale Visual Recognition Challenge (ILSVR) \cite{ILSVRC15}. The ILSVR Challenge tested 200 categories of objects, many more than what PASCAL tested, had more variability of the types of objects, and had many objects in a single image.
+The benchmark that replaced PASCAL is the ImageNet Large Scale Visual Recognition Challenge (ILSVR) \cite{ILSVRC15}. The ILSVR Challenge tested 200 categories of objects, significantly more than what PASCAL tested, had more variability in the object types, and had many objects in a single image.
 
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{ilsvr.png}
@@ -66,7 +66,7 @@ Another benchmark that is still used today is the Common Objects in Context (COC
 
 \section{Evaluating Object Detection}
 
-When evaluating an object detection algorithm, we want to compare the predictions with ground truth. Ground truth is provided by humans who manually classified and located objects in the images.
+When evaluating an object detection algorithm, we want to compare the predictions with ground truth. The ground truth is provided by humans who manually classify and locate objects in the images.
 
 \begin{figure}[ht]
 \centering
@@ -74,7 +74,7 @@ When evaluating an object detection algorithm, we want to compare the prediction
     \caption{Yellow boxes represent ground truth while green boxes are predictions.}
 \end{figure}
 
-When comparing predictions with ground truth, there are four different classifications: \\
+When comparing predictions with ground truth, there are four different possibilities: \\
 
 \textbf{1. \hspace{0.25cm} True Positive (TP)}\\
 True positives are objects that both the algorithm (prediction) and annotator (ground truth) locate. In order to be more robust to slight variations between the prediction and ground truth, predictions are considered true positives when the overlap between the prediction and ground truth is greater than 0.5 (Figure \ref{fig:evaluations}a). The overlap between the prediction and ground truth is defined as the intersection over the union of the prediction and ground truth. True positives are also sometimes referred to as hits.\\
@@ -86,7 +86,7 @@ False positives are objects that the algorithm (prediction) locates but the anno
 False negatives are ground truth objects that our model does not find (Figure \ref{fig:evaluations}b). These can also be referred to as misses.\\
 
 \textbf{4. \hspace{0.25cm} True Negative (TN)}\\
-True negatives are anywhere our algorithm didn’t produce a box and the annotator didn’t provide a box. True negatives are also called correct rejections.\\
+True negatives are anywhere our algorithm didn’t produce a box and the annotator did not provide a box. True negatives are also called correct rejections.\\
 
 \begin{figure}[h]
   \begin{subfigure}{0.32\textwidth}
@@ -121,10 +121,10 @@ In general, we want to minimize false positives and false negatives while maximi
 Using the counts of true positives (TP), true negatives (TN), false positives (FP), and false negatives (FN), we can calculate two measures: precision and recall.
 
 $$Precision = \frac{TP}{TP + FP}$$
-Precision can be thought of as the fraction of objects predicted by the model that are correct.
+Precision can be thought of as the fraction of correct object predictions among all objects detected by the model.
 
 $$Recall = \frac{TP}{TP + FN}$$
-Recall can be thought of as the fraction of ground truth objects that the model predicted. \\
+Recall can be thought of as the fraction of ground truth objects that are correctly detected by the model. \\
 
 \begin{figure}[ht]
 \centering
@@ -132,7 +132,7 @@ Recall can be thought of as the fraction of ground truth objects that the model 
     \caption{Predictions are green boxes while ground truth is yellow. All the ground truths are correctly predicted, making recall perfect. However, precision is low, since there are many false positives.}
 \end{figure}
 
-For every threshold that we decide to use to define true positives (In Figure \ref{fig:evaluations} the overlap threshold was set to 0.5), we can measure the precision and recall. Using that information, we can create a Precision-Recall curve (PR curve). Generally, we want to maximize both precision and recall. Therefore, for a perfect model, precision would be 1 and recall would be 1, for all thresholds. When comparing different models and parameters, we can compare the PR curves. The better models have more area under the curve. 
+For every threshold we use to define true positives (In Figure \ref{fig:evaluations} the overlap threshold was set to 0.5), we can measure the precision and recall. Using that information, we can create a Precision-Recall curve (PR curve). Generally, we want to maximize both precision and recall. Therefore, for a perfect model, precision would be 1 and recall would be 1, for all thresholds. When comparing different models and parameters, we can compare the PR curves. The better models have more area under the curve. 
 
 \begin{figure}[ht]
 \centering
@@ -146,7 +146,7 @@ We can also use the counts of TP, FP, TN, and FN to see how our model is making 
 
 
 \section{A Simple Sliding Window Detector}
-An approach to the detection problem is to treat it as a classification problem. Instead of attempting to produce the location of objects in an image by processing the entire image at once, slide a window over the image and classify each position of the window as either containing an object or not (Figure \ref{fig:sliding_window}).
+The detection can be treated as a classification problem. Instead of attempting to produce the location of objects in an image by processing the entire image at once, slide a window over the image and classify each position of the window as either containing an object or not (Figure \ref{fig:sliding_window}).
 
 \begin{figure}[H]
   \begin{subfigure}{0.48\textwidth}
@@ -168,14 +168,14 @@ An approach to the detection problem is to treat it as a classification problem.
     \includegraphics[width=\linewidth]{sliding_window_d.jpg}
     \caption{}
   \end{subfigure}
-  \caption{Consider the problem of detecting people in an image. (a) - (c) Sliding window across image and at each position classifying window as not containing a person. (b) Window over person and classifying window as containing a person. Image source: Flickr user neilalderney123}
+  \caption{Consider the problem of detecting people in an image. (a) - (c) sliding window across image and at each position classifying window as not containing a person. (b) window over person and classifying window as containing a person. Image source: Flickr user neilalderney123}
   \label{fig:sliding_window}
 \end{figure}
 
 \subsection{Feature Extraction and Object Representation}
-Dalal and Triggs \cite{hog_human_detection} show the effectiveness of using Histograms of Oriented Gradient (HOG) descriptors for human detection. Although their feature extraction methods were focused on human detection, they can be applied for detecting various objects. 
+Dalal and Triggs \cite{hog_human_detection} showed the effectiveness of using Histograms of Oriented Gradient (HOG) descriptors for human detection. Although their feature extraction methods were focused on human detection, they can be applied for detecting various objects. 
 
-Recall HOG descriptors from lecture 8. Essentially, an image window is divided into blocks and the magnitude of the gradients of the pixels in each block are accumulated into bins according to the direction of the gradients. These local histograms of the blocks are then normalized and concatenated to produce a feature representation of the image window.
+Recall HOG descriptors from lecture 8. An image window is divided into blocks; the magnitude of the gradients of the pixels in each block are accumulated into bins according to the direction of the gradients. These local histograms of the blocks are then normalized and concatenated to produce a feature representation of the image window.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth, scale=0.3]{person_template.png}
@@ -200,7 +200,7 @@ Now that we have a method for extracting useful features from an image window an
 
 The similarity score can be as simple as the dot product of the window HOG descriptor and the template HOG descriptor. This is the scoring method that is assumed in following sections.
 
-As effective as the method seems so far, it's success is very limited by the size of the sliding template window. For example, consider when there are objects that are larger than the template being used to detect them (Figure \ref{fig:small_sliding_window}).
+As effective as the method seems so far, it's success is very limited by the size of the sliding template window. For example, consider the case where objects are larger than the template being used to detect them (Figure \ref{fig:small_sliding_window}).
 
 \begin{figure}[h]
   \begin{subfigure}{0.48\textwidth}
@@ -217,7 +217,7 @@ As effective as the method seems so far, it's success is very limited by the siz
 \end{figure}
 
 \subsection{Multi Scale Sliding Window}
-To account for variations in size of the objects being detected, multiple scalings of the the image are considered. Essentially, a feature pyramid (Figure \ref{fig:feature_pyramid}) of different image resizings is created. The sliding window technique is then applied as usual over all the levels of the pyramid. The window that produces the highest similarity score out of the resizings is used as the location of the detected object.
+To account for variations in size of the objects being detected, multiple scalings of the the image are considered. A feature pyramid (Figure \ref{fig:feature_pyramid}) of different image resizings is created. The sliding window technique is then applied as usual over all the the pyramid levels. The window that produces the highest similarity score out of the resizings is used as the location of the detected object.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{feature_pyramid.jpg}
@@ -467,7 +467,7 @@ $$ F_0 + \prod_{i=1}^{n}F_i \cdot \phi(p_i,H) - \sum_{i=1}^{n}d_i(dx_i,dy_i,dx_i
 
 \section{DPM Detection Results}
 
-The Deformable Parts Model makes some key assumptions: that an object is defined by a relationship between a global representation (e.g., a car) and representations of parts (e.g. wheels, or a bumper); that the strength of this detection increases with the decrease in deformation between the root and the parts; and that if a high response score is achieved, that object is indeed present (regardless of the potential presence of different categories of objects). Hence, DPM is vulnerable to error in situations where these assumptions are violated:
+The Deformable Parts Model makes some key assumptions: an object is defined by a relationship between a global representation (e.g., a car) and representations of parts (e.g. wheels, or a bumper); that the strength of this detection increases with the decrease in deformation between the root and the parts; and that if a high response score is achieved, that object is indeed present (regardless of the potential presence of different categories of objects). Hence, DPM is vulnerable to error in situations where these assumptions are violated:
 
 \begin{figure}[h!]
 	\center
