@@ -13,17 +13,17 @@
 \usepackage{graphicx}       % for figures
 \usepackage{caption}
 \usepackage{hyperref}
-
+\usepackage{amsmath}
 %\title{Lecture 12: DIMENSIONALITY REDUCTION}
 
 \title{Lecture 12: Face Recognition \& Dimensionality Reduction}
 
 \author{
-  \textbf{Kyu seo Ahn, Jason Lin, Mandy Lu, Liam Neath, Jintian Liang} \\
+  \textbf{Kyu seo Ahn, Jason Lin, Mandy Lu, Liam Neath, Jintian Liang, Lara Bagdasarian} \\
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{\{kyuseo, jason0, mlu355, lneath, jtliang\}@cs.stanford.edu} \\
+  \texttt{\{kyuseo, jason0, mlu355, lneath, jtliang, lbagdas\}@cs.stanford.edu} \\
 }
 
 
@@ -33,7 +33,7 @@
 
 \section{Overview and Motivation}
 \subsection{Overview}
-Dimensionality reduction is a process for reducing the number of features used in an analysis or a prediction model. This enhances the performance of computer vision and machine learning-based approaches and enables us to represent the data in a more efficient way. There are several methods commonly used in dimensionality reduction. The two main methods covered in this lecture are Singular Value Decomposition (SVD) and Principal Component Analysis (PCA). 
+Dimensionality reduction is a process for reducing the number of features used in an analysis or a prediction model. This enhances the performance of computer vision and machine learning-based approaches and enables us to represent the data in a more efficient way. There are several methods commonly used in dimensionality reduction. The two main methods covered in this lecture are Singular Value Decomposition (SVD) and Principal Component Analysis (PCA), both of which operate under the premise that we may express a set of features in a lower-dimensional space by finding a new coordinate system in which we may still approximately reconstruct the original feature set.
 
 \subsection{Motivation}
 Dimension reduction benefits models for a number of reasons.\\
@@ -71,7 +71,7 @@ The result of this process is a ranked list of "directions" in the feature space
 \includegraphics[scale = 0.5]{usigv_example}
 \item For many readers, it may be sufficient to extract SVD values by writing: [U, S, V] = numpy.linalg.svd(A). However, the underpinnings of how SVD is computed is useful for later topics. Computers typically compute SVD by taking the following steps:
 	\begin{itemize}
-    	\item Compute the eigenvectors of $AA^{T}$. These vectors are the columns of U. Square root of the eigenvalues are the singular values (entries of $\Sigma$)
+    	\item Compute the eigenvectors of $AA^{T}$. These vectors are the columns of U. Square root of the eigenvalues are the singular values (entries of $\Sigma$).
         \item Compute the eigenvectors of $A^{T}A$. These vectors are columns of V (or rows of $V^{T}$)
     \end{itemize}
 \item Since SVD relies on eigenvector computation, which are typically fast, SVD can be performed quite quickly; even for large matrices.
@@ -95,21 +95,42 @@ Then, the resulting vector U$\Sigma$ gets scaled by row 1 of $V^T$ to produce a 
 
 \includegraphics[scale = 0.5]{full_pca}
 
-In this process we are building the the matrix A as a linear combination of the columns of U. As seen above, if we use all columns of U, we rebuild A perfectly. However, in real-world data, \textbf{we can use only the first few columns of U} to get a good approximation of A. This arises due to the properties of $\Sigma$. $\Sigma$ is a diagonal matrix where the largest value is in the top left corner, and the rest of the values on the diagonal decreases as you move to the right. Thus, the first few columns of $U$ contribute the largest weight towards $A$. These first few columns of U are called \textbf{principal components}.\\
+In this process we are building the the matrix A as a linear combination of the columns of U. As seen above, if we use all columns of U, we rebuild A perfectly. However, in real-world data, \textbf{we can use only the first few columns of U} to get a good approximation of A. This arises due to the properties of $\Sigma$. $\Sigma$ is a diagonal matrix where the largest value is in the top left corner, and the rest of the values on the diagonal decreases as you move to the right. Thus, the first few columns of $U$ contribute the largest weight towards $A$. The first few columns of $U$ are called \textbf{principal components}. In order to reduce the dimensionality of our feature space, we may select the highest weighted $p$ principal components to serve as our new axes.\\
 
-However, not all matrices can be easily compressed as in the previous example. One way to evaluate the feasibility is Principal Component Analysis. From a high level standpoint, we want to see if it's possible to remove dimensions that don't contribute much to the final image. We achieve this by analyzing the covariance matrix. Although the value of covariance doesn't matter as much, the sign of covariance does, with positive indicating positive correlation and negative indicating negative correlation. A covariance of zero indicates the two are independent of one another.
+However, not all matrices can be easily compressed as in the previous example. Selecting only the first few columns of $U$ to use as our new axes may result in a compression in which the reconstructed feature set does not resemble the original one. That is to say, we underestimated the impact of the features we removed to our final image. They made independent contributions to the final image such that eliminating them results in a poor approximation of the original image. One way to generate compression axes which better reconstruct our original image is to use Principal Component Analysis. From a high level standpoint, we want to see if it's possible to remove dimensions that don't contribute much to the final image. We achieve this by analyzing the covariance matrix. Covariance is a measure of "spread" in a set of points around their center of mass or mean. More specifically, covariance conveys information about the dependency of two dimensions, thus measuring how much each of two dimensions varies from the mean with respect to each other. A positive value of covariance indicates that both dimensions vary together, a negative value indicates that the two dimensions vary inversely and a zero covariance indicates that the two dimensions vary independently of one another. The equation we use to express covariance is as follows:
+$$covariance(X,Y)= \dfrac{\sum_{i=1}^n(X_i-\bar{X})(Y_i-\bar{Y})}{n-1}$$
+
+Furthermore, since covariance is a binary computation, we can express covariance of multiple dimensions using a covariance matrix containing elements of each pairwise covariance computation. Note that covariance is a symmetric computation, i.e., $cov(x,y)=cov(y,x)$. We can construct a covariance matrix for three dimensions, expressing it as such:$\newline$ \[cov(x,y,z) =
+\begin{bmatrix}
+    cov(x,x) & cov(x,y) & cov(x,z) \\
+    cov(y,x) & cov(y,y) & cov(y,z)\\
+    cov(z,x) & cov(z,y) & cov(z,z)
+\end{bmatrix}
+\]
+By extension, N-dimensional data is associated with an $N\times N $ covariance matrix. As we will see in the section below, our covariance matrix will give us information about which features are duplicative of others due to high dependency. We will be able to describe our image very well without these features that the covariance matrix can reveals.
+
 
 \subsection{Performing Principal Component Analysis}
 Principal Component Analysis can be performed using the sklearn package:
-sklearn.decomposition.PCA. However, it was alluded to earlier that SVD can be used to perform Principal Component Analysis. A non-formal approach is outlined below:
-
+sklearn.decomposition.PCA. However, it was alluded to earlier that SVD can be used to perform Principal Component Analysis.
+To train our axes, we follow the below steps:
 \begin{enumerate}
-\item Format your data into a $m * n$ matrix where $m$ denotes the number of samples and $p$ represents the number of features or variables corresponding to a single sample.
-\item Center the matrix $X$ by subtracting the mean and dividing by the standard deviation along each column(feature) in $X$
-\item Diagonalizing X using SVD yields: $X = U\Sigma V^{T}$
-\item Eigenvectors are the principal directions and the projections on these axises are the components. This ultimately means we want to compute $XV$
-\item Since V holds eigenvectors and is thus orthonormal, $XV = U\Sigma V^{T}V = US$
-\item (5) implies we simply need the columns of $US$, both matrices that are surfaced by SVD
+\item Format your data into a $m * n$ matrix where $m$ denotes the number of samples and $n$ represents the number of features or variables corresponding to a single sample.
+\item Center the matrix $X$ by subtracting the mean across datapoints for each feature and dividing by the number of datapoints in $X$. We call this centered matrix $X_C$
+\item Either apply SVD to $X_C$, in which case the ith eigenvalue is $\dfrac{\sigma_i^2}{n}$, where $\sigma_i^2$ is the ith value situated diagonally in $\sigma$, and corresponding ith eigenvector consists of the ith column of $U$, or alternatively (more computationally expensive) find the covariance matrix for the centered matrix across each of the $n$ dimensions (note that this matrix is square) and compute the eigenvalues and vectors.
+\item Eliminate the eigenvalues and corresponding eigenvectors for all $\sigma_k^2$ if $\sigma_1^2>> \sigma_k^2$. Our new selection of eigenvectors comprises our new axes.
+\end{enumerate}
+
+To project a new point $T = \{t_1, t_2, \cdots, t_n\}, t_i \in \mathbb{R}^n$ into our dimensionally-reduced subspace, we perform the following procedure:
+\begin{enumerate}
+    \item Subtract the mean from each point $t_i$ such that our new point $t'_i = t_i-\hat{\mu}$.
+    \item Project each point from $t_i \in \mathbb{R^n}$ to the lower dimensional new subspace that we found in the training procedure described previously, $Y \subseteq \mathbb{R}^k$ by using $y_i = At'_i$, where the rows of $A$ are the remaining eigenvectors:
+    \[ A = \begin{bmatrix}
+        \phi_i^T\\
+        \phi_2^T\\
+        \vdots \\
+        \phi_k^T
+    \end{bmatrix}\], where $\phi_k$ is the eigenvector corresponding to the eigenvalue $\sigma_k^2$.
 \end{enumerate}
 
 Detailed explanations that elucidate the reasoning behind the above steps are discussed by Moore (1981) and can be found on numerous websites online.
@@ -137,7 +158,7 @@ With just the first 16 principal components, an image that closely resembles the
 \item Web search engines also utilize PCA. There are billions of pages on the Internet that may have a non-trivial relation to a provided search phrase. Companies such as Google, Bing and Yahoo typically narrow the search space by only considering a small subset of this search matrix, which can be extracted using PCA\cite{search-clustering}. This is critical for timely and efficient searches, and it speaks to the power of SVD.
 \end{itemize}
 
-In essence, PCA represents data samples as weights on various components - allowing one to essentially represent the difference between samples. This can significantly reduce data redundancy and can make algorithms used in a variety of industries more efficient and insightful!
+In essence, PCA represents data samples as weights on various components - allowing one to essentially represent the difference between samples. This can significantly reduce data redundancy and can make algorithms used in a variety of industries more efficient!
 
 % References
 \small

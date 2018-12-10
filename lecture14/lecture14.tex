@@ -15,11 +15,12 @@
 \title{Lecture \#14: Visual Bag of Words}
 
 \author{
-  Megha Srivastava, Jessica Taylor, Shubhang Desai, Samuel Premutico,  Zhefan Wang \\
+  Megha Srivastava, Jessica Taylor, Shubhang Desai, Samuel Premutico,  Zhefan Wang
+  \\
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{\{meghas, jtaylor5, shubhang, samprem, zwang141\}@cs.stanford.edu} \\
+  \texttt{\{meghas, jtaylor5, shubhang, samprem, zwang141,lbagdas\}@cs.stanford.edu} \\
 }
 
 \begin{document}
@@ -132,12 +133,13 @@ Once we have produced a visual word histogram, we can use Naive Bayes to classif
 Consider some visual word histogram \textit{X}, where $x_i$ is the count of visual word \textit{i} in the histogram. We are only interested in the presence or absence of word \textit{i}, we have $x_i \in \{0,1\}$.  
 \subsection{Prior}
 $P(c)$ denotes that probability of encountering one object class versus others. For all $m$ object classes, we then have $$\sum_{i=1}^m P(c)=1$$ For an image represented by histogram $x$, and some object class $c$, we can compute $$P(x|c) = \prod_{i=1}^m P(x_i|c)$$
+We are able to make the above statement by assuming the mutual independence of each feature $x_i$ when conditioned on $c$. This assumption is called the Naive Bayes Assumption.
 \subsection{Posterior}
-Using the prior equation, we can now calculate the probability than the image represented by histogram $x$ belongs to class category $c$ using \textbf{Bayes Theorem} $$P(c|x) = \frac{P(c)P(x|c)}{\sum_{c'}P(c')P(x|c')}$$
-Expanding the numerator and denominator, we can rewrite the previous equation as 
-$$P(c|x) = \frac{P(c)\prod_{i=1}^mP(x_i|c)}{\sum_{c'}P(c')\prod_{i=1}^mP(x_i|c')}$$
+Using the prior equation, we can now calculate the probability than the image represented by histogram $x$ belongs to class category $c$ using \textbf{Bayes Theorem}. $$P(c|x) = \frac{P(c)P(x|c)}{\sum_{c'}P(c')P(x|c')}$$
+Note that we express $P(x)$ as the summation of $P(c')P(x|c')$, or equivalently $P(x,c')$ for all $c'$ by using the law of total probability. Expanding the numerator and denominator, we can rewrite the previous equation as 
+$$P(c|x) = \frac{P(c)\prod_{i=1}^mP(x_i|c)}{\sum_{c'}P(c')\prod_{i=1}^mP(x_i|c')}$$ by once again using the Naive Bayes Assumption of conditional independence of each $x_i$ on $c'$.
 \subsection{Classification}
-In order to classify the image represented by histogram $x$, we simply find the class $c^*$ that maximizes the previous equation:
+In order to classify the image represented by histogram $x$, we simply find the class $c^*$ that maximizes the previous equation. That is to say, we look for the label $c = c^*$ such that the label that $c$ has the highest probability of taking on given its feature data is $c^*$:
 $$c^*=arg{max}_{c}P(c|x)$$
 Since we end up multiplying together a large number of very small probabilities, we will likely run into unstable values as they approach 0. As a result, we use logs to calculate probabilities:
 $$c^*=arg{max}_{c}logP(c|x)$$
