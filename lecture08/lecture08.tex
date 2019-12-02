@@ -20,11 +20,11 @@
 \title{Lecture 8: Feature Descriptors and Resizing}
 
 \author{
-  \textbf{Harrison Caruthers, Diego Celis, Claire Huang, Curtis Ogren, Junwon Park} \\
+  \textbf{Harrison Caruthers, Diego Celis, Claire Huang, Curtis Ogren, Junwon Park, Krithika Iyer} \\
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{\{hdcaruth, dcelis, chuang20, ceogren, junwonpk\}@cs.stanford.edu} \\
+  \texttt{\{hdcaruth, dcelis, chuang20, ceogren, junwonpk, ksiyer\}@cs.stanford.edu} \\
 }
 
 \begin{document}
@@ -172,6 +172,107 @@ Despite these downsides, HOG can be quite effective. Note the results of applyin
 
 \subsection{Difference between HoG and SIFT}
 There are some minor differences between the two. HOG is used over an entire image to find gradients. SIFT is used for key point matching. The SIFT histograms orient towards the natural positive gradient while HOG does not. HOG uses neighborhood bins, while SIFT uses weights to compute varying descriptors.
+
+\section{Image Stitching and Panorama Creation}
+
+\subsection{Homogeneous Coordinates}
+Stitching together multiple images to create a panoramic view requires an understanding of projective geometry and homography. In addition to our familiar 3D Euclidean space, an additional dimension called W needs to be considered. W may be thought of as the distance between a projector and an image. The four dimensional space is called “projective space” and the coordinates in projective space are called “homogeneous coordinates”. Conversion between image coordinates and homogeneous coordinates is carried out as follows: (i) to convert to homogeneous coordinates,
+\break
+\begin{equation*}
+\centering
+(x, y) \Rightarrow \begin{bmatrix}
+x\\ 
+y\\ 
+1
+\end{bmatrix}
+\end{equation*}
+\break
+and (ii) from homogeneous coordinates to image coordinates
+
+\begin{equation*}
+\centering
+\begin{bmatrix}
+x\\ 
+y\\ 
+1
+\end{bmatrix} 
+ \Rightarrow
+( \frac{x}{w}, \frac{y}{w} )
+\end{equation*}
+
+
+When taking pictures with a camera, W may be thought as the distance from the camera to the objects in the picture. Objects near the camera appear larger (in the image) that objects that are farther from the camera. This phenomenon is known as “perspective”. Images from different “perspective”s need to be transformed to a common perspective before they can be stitched together.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{cmu_composite_panorama.png}
+  \caption{The different rectangles show images taken from different perspectives, but transformed to a common perspective plane through a keypoint matching and image transformation process. Source: $ http://graphics.cs.cmu.edu/courses/15-463/2010 fall/$}
+\end{figure}
+
+\subsection{Transformations}
+The transformation of an image from one projective plane to another may involve translation, scaling (up or down), rotation, shear, and changes in aspect ratio. Such operations are illustrated below.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{transforms.png}
+  \caption{Basic transformation operations. Effect of 2D translation (which moves the image in x, y directions) is not shown here. Image Credit: S. Seitz and R. Collins. Penn State.}
+\end{figure}
+
+The matrices (in homogeneous coordinates) used to calculate such transformations from one perspective to another are shown below.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{transMatrices.png}
+  \caption{Matrices used to compute the new coordinates after basic transformations. Image Credit: Svetlana Lazebnik. UIUC.}
+\end{figure}
+
+\subsection{Homography}
+
+Homography matrix describes the transformation between points in one picture and a related neighboring picture (different perspective). In Figure 11, the identical points are denoted by their respective perspective based coordinates. Homography matrix H describes the transformation from one set of coordinates to the other.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\textwidth]{homography_prob.png}
+  \caption{Identical points in different images and perspectives. Image Credit: Svetlana Lazebnik. UIUC.}
+\end{figure}
+
+The coordinates of the keypoint denoted by the red dot in both the images are related by the Homography matrix H. The point $ p_1 =  [ x_1, y_1] $ on the left image (in Figure 11) matches with the point $ p_2 =  [ x'_1, y'_1] $ on the right image, the transformation from one to the other is given by:
+\begin{equation*}
+\centering
+\begin{bmatrix}
+wx'\\ 
+wy'\\ 
+1
+\end{bmatrix} =
+\begin{bmatrix}
+a &b  &c \\ 
+d & e &f \\ 
+g & h & i
+\end{bmatrix}\begin{bmatrix}
+x\\ 
+y\\ 
+1
+\end{bmatrix}
+\end{equation*}
+
+It may be impossible to to find the transformation matrix H that transforms every point in image 2 to the corresponding point in another image. It is possible to estimate the transformation matrix H with least squares. Given $N$ matched keypoint pairs, $X_1$ and $X_2$ (both $ N X 3 $ matrices whose rows are homogeneous coordinates), H can be estimated by solving the least squares problem:
+\begin{equation*}
+    \centering
+    X_2 H = X_1
+\end{equation*}
+
+\subsection{RANSAC}
+During the least squares based estimation of the H matrix, it is a good practice to utilize RANSAC ("RANdom SAmple Consensus") to reduce the effect of outliers in the data.
+We avoid the impact of outliers by looking for inliers. The reasoning is that when an outlier is chosen to estimate the current fit, there will not be much support from the inliers for the current fit. Inliers are defined as points that are less than a threshold distance t, from the current fit.
+
+The RANSAC steps are: (Source: Homework \# 3)
+\begin{enumerate}
+    \item Select a random set of matches.
+    \item Compute affine transform matrix.
+    \item Find the inliers using given threshold.
+    \item Repeat and find the largest set of inliers.
+    \item Re-compute least square estimates on all inliers.
+\end{enumerate}
 
 \section{Image resizing with seam carving}
 Because there are different screen sizes, we need to resize content according to display capabilities. Normally, we try to force content to fill up any kind of display by stretching or shrinking an image. However, this produces less than desirable results. So what is the solution? Content-aware re-targeting operators.
