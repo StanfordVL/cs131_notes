@@ -68,7 +68,7 @@ Answer: First, we must find how many inputs there are. Because we are using a ra
 
 As in the example, each class has a set of $n_{input}$ weights, where $n_{input}$ is the dimension of the input vector. You can actually visualize the weights as images:
 
-\includegraphics[width=400px]{cs131_pic_1.png}
+\includegraphics[width=400px]{weights.png}
 
 Sometimes, you also add a bias vector to your results. Intuitively, this helps learn the bias for or against one class in the dataset. For example, if there were more birds in the dataset, you would have a big bias term for the element corresponding to the bird class.
 
@@ -155,7 +155,7 @@ Evaluating that expression, we get that Loss = $L(\hat{y}, y)$ = $-log\frac{e^{\
 
 Now, we can translate the theory into code. First, we calculate the loss by looping through each data point and averaging the losses of each data point. Then, we calculate the derivative of the loss with respect to each weight, and update each weight.
 
-\includegraphics[width=250px]{cs131_pic_2.png}
+\includegraphics[width=250px]{gradient_descent_code.png}
 
 $\alpha$ is a hyperparameter that represents step size. You can tune this hyperparameter to find the optimal step size. If $\alpha$ is too small, then your algorithm will take a long time (many iterations) to finish, while if $\alpha$ is too big, your algorithm might overshoot the local minima.
 
