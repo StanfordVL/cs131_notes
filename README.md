@@ -2,10 +2,6 @@
 
 ## Instructions for creating class notes
 
-### Signup to write the notes for a particular lecture.
-
-[Here is the link](https://docs.google.com/spreadsheets/d/1-2PAMFgZ7m2AYlgrzsbynwlGULUp_DdlX3N6h5S9n78/edit#gid=0) (Stanford students only). Try and choose lectures that have no students signed up yet.
-
 ### Overall workflow
 1. Fork this repository by clicking the "Fork" button on the top right of [this
 page](https://github.com/StanfordVL/cs131_notes).
