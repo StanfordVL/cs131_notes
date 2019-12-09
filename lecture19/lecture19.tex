@@ -1,4 +1,4 @@
-\documentclass{article}
+﻿\documentclass{article}
 
 \usepackage[final]{style}
 \usepackage[utf8]{inputenc} % allow utf-8 input
@@ -17,11 +17,11 @@
 \title{Lecture \#19: Introduction to Deep Learning}
 
 \author{
-  Vineet Edupuganti, Mihir Garimella, Ben Kotopka, Prathik Naidu, Rohan Suri \\
+  Vineet Edupuganti, Mihir Garimella, Ben Kotopka, Prathik Naidu, Rohan Suri, Trishiet Ray \\
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{\{ve5, mihirg, bkotopka, prathik.naidu, rsuri2\}@cs.stanford.edu} \\
+  \texttt{\{ve5, mihirg, bkotopka, prathik.naidu, rsuri2, trishiet\}@cs.stanford.edu} \\
 }
 
 \begin{document}
@@ -94,7 +94,9 @@ Deep learning has also been used to demonstrate extremely impressive results to 
 In addition, "deep reinforcement learning" approaches have demonstrated incredible success for several tasks. Deep reinforcement learning involves learning an optimal control policy (i.e., a series of actions to take given a particular state to reach an end goal) end-to-end through repeated trial-and-error, with the ultimate objective being to directly map state information (e.g., a screenshot of a video game) to the optimal action to take  (e.g., the controller buttons to hit/directional pad inputs to supply). This approach has been used to demonstrate remarkable results for many game-based tasks in particular, including learning how to play  Atari games \cite{atari} and beating the world champion in the strategy board game Go \cite{go}, long considered a benchmark of AI progress.
 
 \section{Motivation}
-Most deep learning problems are formulated as supervised learning tasks; data $X$ and labels $y$ are given, and the goal is to learn accurate predicted labels $\hat{y}$. Image classification (in which we want to place an image into one of several pre-specified categories) is a supervised learning task commonly addressed with deep learning approaches. The other approaches to image classification we've covered first extract hand-designed features, then use machine learning approaches (e.g. PCA or KNN) to learn models on this restricted feature set; at test time, we use the classifier output $\hat{y}$ as our predicted classification. Critically, the feature extractor is hand-designed and cannot be optimized during training.
+Most deep learning problems are formulated as supervised learning tasks; data $X$ and labels $y$ are given, and the goal is to learn accurate predicted labels $\hat{y}$. Image classification (in which we want to place an image into one of several pre-specified categories) is a supervised learning task commonly addressed with deep learning approaches. The other approaches to image classification we've covered first extract hand-designed features, then use machine learning approaches (e.g. PCA or KNN) to learn models on this restricted feature set. Critically, the feature extractor is hand-designed and cannot be optimized during training.\\
+\\
+A typical supervised image classification pipeline looks like the following: you start with a training set of images, across multiple different classes (for example: "airplane," "car," "bird," "cat," etc). Features are extracted from the images and fed into the neural network, which is trained on these labeled examples. Once a learned classifier is obtained, it can then take in the features from an unlabeled test image and make a classification prediction.
 \begin{figure}[h]
 \includegraphics[width=6cm]{Conventional_schematic.png}
 \centering
@@ -121,12 +123,23 @@ Deep learning models contain many layers, which learn hierarchical features. Low
 \section{Supervised Learning}
 
 \subsection{Problem Formulation}
-Supervised learning is the process of learning a function from labeled training data. Given a set of training examples, the model will adjust its weights so as to minimize the value of its cost function — an expression like the mean squared error that measures how different predicted and actual values are. Oftentimes, this loss function will include a regularization term,R(w), that penalizes large weight values and limits model complexity. The model can then use these calculated weights to predict output labels or values for testing data. The testing error can subsequently be evaluated and used for model performance analysis. 
+Supervised learning is the process of learning a function from labeled training data $(x_1, y_1), (x_2, y_2), \ldots, (x_N, y_N)$.
+In image classification, $x_i$ would be an image and $y_i$ would be an integer label (0 for dog, 1 for cat, etc.)\\
+\\
+A loss function $L_i(y_i, \hat{y_i})$, given a training label $y_i$ and a corresponding perceptron $\hat{y_i} = wx_i$, specifies how well a classifier is currently performing. When the classifier predicts correctly ($y_i = \hat{y_i}$), the loss should be low; when it predicts incorrectly; ($y_i \neq \hat{y_i}$), the loss should be high.
+Loss over the entire dataset is an average of loss over examples:\\
+$L = \sum_{i=1}^N L_i(y_i, \hat{y_i})$. When designing a model, you must choose the loss function. Some common examples are described below:
+\begin{figure}[h]
+\includegraphics[width=6cm]{loss_functions.PNG}
+\centering
+\caption{Common loss functions in machine learning (2019 CS 131 lecture slide 45)}
+\end{figure}
+
+Given a set of training examples, the model will adjust its weights so as to minimize the value of its loss function. Oftentimes, this loss function will include a regularization term, R(w), that penalizes large weight values and limits model complexity. The model can then use these calculated weights to predict output labels or values for testing data. The testing error can subsequently be evaluated and used for model performance analysis. 
 
 The following equation provides a general solution to the problem of supervised learning. 
 
 $$W^* = \arg\min_{W} \frac{1}{N} \sum_{i=1}^{N} l(f(x_{i},w),y_{i}) + R(w)$$
-
 
 \subsection{Linear Regression}
 Linear regression is a method of supervised learning where we attempt to model an input vector $x_i\in \mathbb{R}^{D_{in}}$ to an output vector $y_i\in \mathbb{R}^{D_{out}}$. Linear regressions attempts to model this through a simple linear transformation or matrix multiply:
@@ -142,6 +155,16 @@ $$W^* = \arg\max_{W} \frac{1}{2N} \sum_{i=1}^{N} ||Wx_i - y||_2^2 + \lambda ||W|
 \centering
 \caption{An example of a simple linear regression model being used to classify an image. Each row of $W$ represents the weights used to sum the input for each output class. (CS 131 lecture slide 19-42)}
 \end{figure}
+\subsection{Softmax Classifier}
+Logistic regression (fitting a model that looks like $\frac{1}{1 + e^{-(b_0 + b_1x)}}$ instead of $y = b_0 + b_1x$ for linear regression) is similar to linear regression, except that the outcome (dependent variable) has only a limited number of possible values. Generalizing logistic regression to multi-class problems allows us to constrain our output to the range [0, 1], which can be treated as a probability.\\
+\\
+A softmax classifier allows us to treat the outputs of a model as probabilities for each class. A common way of measuring distance between probability distributions is the Kullback-Leibler (KL) divergence, which can be interpreted as the negative log of the probability that the model makes a correct prediction for each y.
+
+$$D_{KL} = \sum_y P(y) \log{\frac{P(y)}{Q(y)}} = - \log{Prob[f(x_i, W) = y_i]}$$
+
+where P is the ground truth distribution and Q is the model's output score distribution. We then apply the softmax function, $\frac{e^{\hat{y}}k}{\sum_j e^{\hat{y}}j } $, to constrain our probability to the range [0, 1].
+$$Prob[f(x_i, W) = y_i] = \frac{e^{\hat{y}}k}{\sum_j e^{\hat{y}}j } $$
+
 \subsection{Neural Networks}
 In some cases, a simple linear transformation is too simplistic of a function for our purposes and we would like to introduce a more complex model for our supervised learning task. At first, we may be tempted to merely introduce additional matrix multiplies as follows:
 
@@ -153,12 +176,18 @@ $$f(x,W_1,W_2) = W_2(\sigma(W_1x))$$
 
 In this model, a matrix multiply $W_1$ is followed by an element-wise non-linearity function $\sigma : \mathbb{R}^H \Rightarrow \mathbb{R}^H$, which is followed again by another $W_2$ matrix multiply. This is an example of a one-layer neural network. The introduction of the non-linearity function, $\sigma$, allows this model to be much more expressive and powerful than a simple linear model.  
 
-Given that the use of the non-linearity function is a large part of what makes neural networks superior to basic linear models, a great deal of research has gone into finding the optimal function for use in these systems. The sigmoid function, defined as $\sigma(x) = \frac{1}{1+e^{-x}}$ has risen to popularity in part because it is continuous and easy to differentiate, while also bounding its inputs. Meanwhile, the rectified linear unit, defined as defined as $\sigma(x) = max(0,x)$ is another example of a popular activation function that has seen superb performance in literature as well as favorable efficiency.
+An activation function is a non-linear max function allows models to learn more complex transformations for features. Given that the use of the non-linearity function is a large part of what makes neural networks superior to basic linear models, a great deal of research has gone into finding the optimal function for use in these systems. The sigmoid function, defined as $\sigma(x) = \frac{1}{1+e^{-x}}$ has risen to popularity in part because it is continuous and easy to differentiate, while also bounding its inputs. Meanwhile, the rectified linear unit, defined as defined as $\sigma(x) = max(0,x)$ is another example of a popular activation function that has seen superb performance in literature as well as favorable efficiency. Other common functions include functions include tanh, Leaky ReLU, Maxout, and ELU.
 
 \begin{figure}[h]
 \includegraphics[width=7cm]{activation_functions.png}
 \centering
 \caption{Depictions of the rectified linear unit and sigmoid activation functions (CS 131 lecture slide 48)}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=7cm]{activation_functions2.PNG}
+\centering
+\caption{Depictions of other activation functions (2019 CS 131 lecture slide 91)}
 \end{figure}
 
 The vector produced by each non-linearity (also called the activation function) is called a hidden layer. These types of models can be increased in size to include more matrix multiplies and thus more hidden states. The previous, one-layer neural network can be expanded to a two-layer neural network as follows:
@@ -193,9 +222,11 @@ w = w - $\alpha*\nabla g(w)$
  }
 \end{algorithm}
 
+We can compute the gradient as the partial derivative of the loss function with respect to the weight: $\frac{dL}{dW} = \frac{dL}{d\hat{y}}\frac{d\hat{y}}{dW}$ where $\hat{y} = Wx$ and $L = Loss(\hat{y}, y)$.
+
 With this approach, we can iteratively update the weights of our model and use the learning rate ($\alpha$), which is a hyper-parameter that tells gradient descent how quickly to step in search for a minimum.
 
-
+Backpropagation, short for "backward propagation of errors," is an algorithm used for gradient descent. The key insight is to visualize the computation as a graph: compute the forward pass to calculate the loss, then compute all gradients for each computation backwards
 
 \section{Convolutional Neural Networks}
 Convolutional neural networks are a very successful and commonly used subset of deep learning models, which adapt the convolutional filters discussed in earlier lectures. Starting from an original image (say, 32x32 with 3 color channels), the image is convolved with multiple filters. (In the example used in class, a 5x5 filter was used, only over the "valid" region of the image - so no overlap with the region outside the image; the output side length is 32-5+1 = 28.) Crucially, the parameters of these filters are optimized jointly via backpropagation - we are no longer limited to hand-chosen features.
@@ -223,6 +254,7 @@ The GoogLeNet case study takes this approach one step further by building "Incep
 \centering
 \caption{GoogLeNet architecture and Inception module. (CS 131 lecture slide 19-101)}
 \end{figure}
+
  
 \section{Conclusion}
 Deep learning is a relatively recent paradigm in computer vision and related machine learning fields which co-trains feature extractors and classifiers instead of relying on human skill to identify salient features. Deep learning approaches are the state of the art in most computer vision problems today; however, in settings where training examples are expensive or inherently limited, other methods covered in this class can still be very useful, as human intuitions about a problem domain can be used to choose good sets of features.
