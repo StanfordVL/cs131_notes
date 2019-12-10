@@ -141,6 +141,7 @@ Gradient Descent is a technique used to find optimal weights that minimize the l
 In Gradient Descent, you iterate through the following loop:
 
 1. You first compute the derivative of the loss with respect to the weights, and with this, you would know which direction to move the weights in order to lower the loss.
+
 2. You would move toward that direction by updating the weights.
 
 You would repeat the two steps until you get to a local minima. In this way, the gradient descent algorithm will slowly decrease the loss.
@@ -149,20 +150,105 @@ You would repeat the two steps until you get to a local minima. In this way, the
 
 We can calculate what the gradient looks like given our loss function. First, we have a training data point (x, y), and we are using the linear classifier where $\hat{y} = wx$. Let us define k as the class which is correct. We know that the loss is -log(softmax($\hat{y}(k)$)), where $\hat{y}(k)$ is the score given to the correct class by the linear classifier.
 
-Evaluating that expression, we get that Loss = $L(\hat{y}, y)$ = $-log\frac{e^{\hat{y}_k}}{\sum_{j}e^{\hat{y}_j}}$ = $-\hat{y}_k + log\sum_j e^{\hat{y}_j}$. Now that we have our loss function in terms of $\hat{y}$, which can be expressed in terms of $w$, we can therefore calculate the derivative of the loss function with respect to each weight.
+Evaluating that expression, we get that Loss = $L(\hat{y}, y)$ = $-log\frac{e^{\hat{y}_k}}{\sum_{j}e^{\hat{y}_j}}$ = $-\hat{y}_k + log\sum_j e^{\hat{y}_j}$. 
+
+Now that we have our loss function, we need the derivative of the loss function with respect to each weight, $\frac{dL}{dW}$. However, since the loss function is in terms of $\hat{y}$, we will need to use the chain rule:
+
+$\frac{dL}{dW} = \frac{dL}{d\hat{y}} \frac{d\hat{y}}{dW}$.
+
+First, we need to calculate $\frac{dL}{d\hat{y}}$. To do this, we need to consider 2 cases.
+
+Case 1: We are calculating the derivative respect to $\hat{y}$ for the class k. In this case, the derivative of the loss function is
+
+$\frac{dL}{d\hat{y}_k}$ = $\frac{d}{d\hat{y}_k}(-\hat{y}_k) + \frac{d}{d\hat{y}_k}(log\sum_j e^{\hat{y}_j})$
+
+$ = -1 + \frac{e^{\hat{y}_k}}{\sum_j e^{\hat{y}_j}}$.
+
+Case 2: We are calculating the derivative respect to $\hat{y}$ for a class $l$ where $l \neq k$. In this case, the derivative of the loss function is
+
+$\frac{dL}{d\hat{y}_k}$ = $\frac{d}{d\hat{y}_k}(-\hat{y}_k) + \frac{d}{d\hat{y}_k}(log\sum_j e^{\hat{y}_j})$
+
+= $\frac{e^{\hat{y}_l}}{\sum_j e^{\hat{y}_j}}$.
+
+We also know that since $\hat{y} = Wx$, $\frac{d\hat{y}}{dW} = x.$ Thus, we see that $\frac{dL}{dW} = $
+$
+\begin{bmatrix} 
+\frac{e^{\hat{y}_0}}{\sum_j e^{\hat{y}_j}} \\
+\frac{e^{\hat{y}_1}}{\sum_j e^{\hat{y}_j}} \\
+... \\
+-1 + \frac{e^{\hat{y}_k}}{\sum_j e^{\hat{y}_j}} \\
+... \\
+\frac{e^{\hat{y}_{n-2}}}{\sum_j e^{\hat{y}_j}} \\
+\frac{e^{\hat{y}_{n-1}}}{\sum_j e^{\hat{y}_j}}
+\end{bmatrix}
+$
+
+where $n$ is the number of classes.
 
 \subsection{Pseudocode of Gradient Descent}
 
 Now, we can translate the theory into code. First, we calculate the loss by looping through each data point and averaging the losses of each data point. Then, we calculate the derivative of the loss with respect to each weight, and update each weight.
 
-\includegraphics[width=250px]{gradient_descent_code.png}
+\includegraphics[width=250px]{activation_functions.png}
 
 $\alpha$ is a hyperparameter that represents step size. You can tune this hyperparameter to find the optimal step size. If $\alpha$ is too small, then your algorithm will take a long time (many iterations) to finish, while if $\alpha$ is too big, your algorithm might overshoot the local minima.
 
 % To come next time? 
 % \section{Gradient Descent and Backpropagation}
 % \section{Neural Networks}
- 
+\section{Backpropagation}
+Backpropagation is a method to compute the gradients which visualizes the computation as a graph. For example, you would first have a graph to compute the loss:
+
+\includegraphics[width=200px]{backprop_pic_2.png}
+
+You would first apply the multiplication operator on W and x to get $\hat{y}$. Afterwards, you would calculate loss from $\hat{y}$ and $y$. This step of going forward to find the loss is called the forward pass.
+
+Afterwards, you go backwards to calculate the gradients:
+
+\includegraphics[width=200px]{backprop_pic_1.png}
+
+You first calculate $\frac{dL}{d\hat{y}}$ using the methods described in section 6.2. Then, you can calculate values such as $\frac{dL}{dW}$ by using the chain rule ($\frac{dL}{dW} = \frac{dL}{d\hat{y}} \frac{d\hat{y}}{dW}$). In the above example, because $\hat{y} = Wx$, $\frac{d\hat{y}}{dW} = x = 2$. Thus, $\frac{dL}{dW} = \frac{dL}{d\hat{y}} \frac{d\hat{y}}{dW} = (1.2)(2) = 2.4.$
+
+\section{Neural Networks}
+
+\subsection{Basics of Neural Networks}
+
+We have many ways of producing features for a dataset, including using the raw pixels, injecting positional information using the raw pixels in addition to the (x, y) coordinates, using LDA or PCA to find features that produce the most variance in a supervised or unsupervised manner, or using a set of interesting areas in an image, called a "Bag of Words". If we are using the dataset for classification, we could then use a linear classifier to separate the data. However, sometimes, the data isn't linearly separable, leading the classifier to perform poorly, as in the example below.
+
+Finding good, linearly separable features for use in classification still is a difficult and somewhat finicky task. Namely, we don't know what data we are going to get, and each dataset might require a different feature encoding method to produce the best results possible. However, there is a solution.
+
+The strategy is to design a function to convert features which are not linearly separable into features that are. For example, in the picture below, by applying a transformation to $(r, \theta)$ coordinates, you could now linearly separate the data.
+
+\includegraphics[width=200px]{linearly_separable.png}
+
+In other words, the function will learn what features to input into our linear classifier. The outputs of that function would be the inputs of the linear classifier, which would look something like this:
+
+\includegraphics[width=300px]{neural_network.png}
+
+This is a neural network with 2 layers, where the first layer generally works to learn better features and the second layer classifies the better features. Neural networks with $n$ layers have the first $n-1$ layers to learn better features and the last layer, usually a softmax, for the purpose of classification.
+
+For the 2-layer network, we can calculate $\hat{y}$ using the following formula: 
+
+$\hat{y} = W_2max(0, W_1x)$.
+
+Why is the max function necessary? Notice that one property of linear functions like matrix multiplication is that no matter how many of them you apply, the transformation on a whole is linear. Thus, if you got rid of the max function, you would have $\hat{y} = W_2W_1x$, but that would just collapse to $\hat{y}=Wx$ where $W = W_2W_1$.
+
+We can also calculate the shape of the matrices that hold the weights.
+
+\textbf{Example 3.}
+Let the shape of $x$, the input, be (3072, 1), let the shape of $y$, the output, be (10, 1), and let the shape of $a$, the hidden units, be (h, 1). What is the shape of $W_1$ and $W_2$?
+
+Answer: Since $a = W_1x$, $W_1$ must be shape (h, 3072) so that $W_1x$ is of shape (h, 1). Also, since $y = W_2a$, $W_2$ must be shape (10, h) so that $W_2a$ is of shape (10, 1).
+
+Note: When designing the structure of the network, we determine the value of $h$, so $h$ is another hyperparameter.
+
+\subsection{Activation Function}
+The max function in the formula $\hat{y} = W_2max(0, W_1x)$ for calculating the prediction of a 2-layer neural network is one of many activation functions (also called nonlinearities because they prevent the neural network from collapsing back into one linear combination). Such functions allow models to learn more complex transformations for features. There are many activation functions, as seen below:
+
+\includegraphics[width=300px]{activation_functions.png}
+
+The sigmoid function is very popular and widely used but one of the slower functions, while tanh is similar to sigmoid in terms of properties but is centered at 0. ReLU (the rectified linear unit) is the function used in most neural networks today because of its double function in providing nonlinearity and regularization, and it is one of the faster functions. Leaky ReLU is an advanced version of ReLU. Finally, Maxout and ELU are less seen but still used in some cases. Choosing the right activation function is another hyperparameter, so try different ones to see which ones work best.
+
 \section{Conclusion}
 Understanding the history of deep learning and how the algorithms and models developed will be crucial to understanding how deep learning works. The models of deep learning are made of stacks of linked linear classifiers. Deep learning algorithms evaluate their performance using loss functions. Softmax is still popular in the output of deep learning algorithms. Furthermore, backpropagation and gradient descent (advanced versions of it), which give the model the ability to learn weights, is crucial for performance at increasingly complex tasks in computer vision and elsewhere.
 
