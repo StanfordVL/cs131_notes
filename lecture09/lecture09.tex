@@ -205,6 +205,15 @@ When we carve seams, we are removing the lowest energy pixels and preserving the
 Figure 15: The forward energy calculations; source: Lecture 7-71
 \end{center}
 
+Figure 15 gives us 3 cases of removing seam containing pixel $p(i,j)$. Calculating the three possible vertical seam step costs for pixel $p(i,j)$ using forward energy. After removing the seam, new neighbors (in gray) and new pixel edges (in red) are created. In each case the cost is defined by the forward difference in the newly created pixel edges. This is because at each step, we search for the seam whose removal inserts the minimal amount of energy into the image. These are seams that are not necessarily minimal in their energy, but will leave less artifacts in the resulting image, after removal. Note that the new edges created in row $i-1$ were accounted for in the cost of the previous row pixel. 
+
+Thus we have 
+$$C_L(i,j) = \|I(i,j+1) - I(i,j-1)\| + \|I(i-1,j) + I(i, j-1) \|$$
+
+$$C_R(i,j) = \|I(i,j+1) - I(i,j-1)\| + \|I(i-1,j) + I(i, j+1) \|$$
+
+$$C_U(i,j) = \|I(i,j+1) - I(i,j-1)\|$$.
+
 The figure below compares the performance of backward and forward computations for image resizing. The traditional "backward" energy approach resulted in jagged edges appearing along the handle of the wrench and the stem of the plant. The "forward" energy approach, on the other hand, minimizes the added energy, and the smoothness of the edges is maintained.
 
 \begin{center}
